@@ -41,68 +41,13 @@ public class Main {
         String json = """
                 {
                   "empleados": [
-                    {
-                      "rut": "%s",
-                      "nombre": "%s",
-                      "apellido": "%s",
-                      "cargo": "%s",
-                      "sueldoBase": %.0f,
-                      "direccion": {
-                        "calle": "%s",
-                        "numero": "%s",
-                        "ciudad": "%s",
-                        "region": "%s"
-                      }
-                    },
-                    {
-                      "rut": "%s",
-                      "nombre": "%s",
-                      "apellido": "%s",
-                      "cargo": "%s",
-                      "sueldoBase": %.0f,
-                      "direccion": {
-                        "calle": "%s",
-                        "numero": "%s",
-                        "ciudad": "%s",
-                        "region": "%s"
-                      }
-                    },
-                    {
-                      "rut": "%s",
-                      "nombre": "%s",
-                      "apellido": "%s",
-                      "cargo": "%s",
-                      "sueldoBase": %.0f,
-                      "direccion": {
-                        "calle": "%s",
-                        "numero": "%s",
-                        "ciudad": "%s",
-                        "region": "%s"
-                      }
-                    }
-                  ],
-                  "resumen": {
-                    "totalEmpleados": 3,
-                    "sueldosBase": [
-                      { "nombre": "%s %s", "monto": %.0f },
-                      { "nombre": "%s %s", "monto": %.0f },
-                      { "nombre": "%s %s", "monto": %.0f }
-                    ]
-                  }
+                    %s,
+                    %s,
+                    %s
+                  ]
                 }
                 """.formatted(
-                emp1.getRut(), emp1.getFirstName(), emp1.getLastName(),
-                emp1.getPosition(), emp1.getBaseSalary(),
-                emp1.getAddress().getStreet(), emp1.getAddress().getNumber(),
-                emp1.getAddress().getCity(), emp1.getAddress().getRegion(),
-                emp2.getRut(), emp2.getFirstName(), emp2.getLastName(),
-                emp2.getPosition(), emp2.getBaseSalary(),
-                emp2.getAddress().getStreet(), emp2.getAddress().getNumber(),
-                emp2.getAddress().getCity(), emp2.getAddress().getRegion(),
-                emp3.getRut(), emp3.getFirstName(), emp3.getLastName(),
-                emp3.getPosition(), emp3.getBaseSalary(),
-                emp3.getAddress().getStreet(), emp3.getAddress().getNumber(),
-                emp3.getAddress().getCity(), emp3.getAddress().getRegion(),
+                emp1, emp2, emp3,
                 emp1.getFirstName(), emp1.getLastName(), emp1.getBaseSalary(),
                 emp2.getFirstName(), emp2.getLastName(), emp2.getBaseSalary(),
                 emp3.getFirstName(), emp3.getLastName(), emp3.getBaseSalary());

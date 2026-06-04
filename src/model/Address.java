@@ -88,6 +88,7 @@ public class Address {
 
     @Override
     public String toString() {
-        return street + " " + number + ", " + city + ", " + region;
+        return "{ \"calle\": \"" + street + "\", \"numero\": \"" + number
+                + "\", \"ciudad\": \"" + city + "\", \"region\": \"" + region + "\" }";
     }
 }

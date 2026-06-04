@@ -63,6 +63,9 @@ public class Employee extends Person {
 
     @Override
     public String toString() {
-        return super.toString() + " | Cargo: " + position + ", Sueldo Base: $" + baseSalary;
+        return "{ \"rut\": \"" + getRut() + "\", \"nombre\": \"" + getFirstName()
+                + "\", \"apellido\": \"" + getLastName() + "\", \"cargo\": \"" + position
+                + "\", \"sueldoBase\": " + (long) baseSalary
+                + ", \"direccion\": " + getAddress() + " }";
     }
 }
