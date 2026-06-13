@@ -1,0 +1,11 @@
+1;Tour Isla Huar;Calbuco;4 horas;30000;12.345.678-5;Carlos;Muñoz;Av. Costanera;123;Llanquihue;Región de Los Lagos;Guía Turístico;850000;Español;Inglés
+2;Navegación Lago Llanquihue;Puerto Varas;2 horas;25000;23.456.789-6;María;González;Pedro Montt;456;Puerto Varas;Región de Los Lagos;Guía Turístico Senior;1200000;Español;Francés
+3;Saltos del Petrohué;Parque Nacional V. Pérez Rosales;3 horas;15000;34.567.890-5;Pedro;Soto;Ruta 5 Sur;Km 950;Frutillar;Región de Los Lagos;Conductor Turístico;720000;Español;Portugués
+4;Volcán Osorno;Ensenada;5 horas;35000;11.111.111-1;Ana;Martínez;San Francisco;234;Puerto Montt;Región de Los Lagos;Guía Turístico;900000;Español;Alemán
+5;Termas de Puyuhuapi;Carretera Austral;8 horas;55000;15.432.876-9;John;Smith;O'Higgins;567;Calbuco;Región de Los Lagos;Guía Internacional;1500000;Inglés;Español
+6;Frutillar Costanera;Frutillar;2 horas;12000;18.765.432-7;Luis;Fernández;Arturo Prat;789;Ancud;Región de Los Lagos;Guía de Montaña;600000;Español;Inglés
+7;Chiloé Mágico;Ancud;10 horas;65000;21.098.765-7;Camila;Torres;Balmaceda;321;Castro;Región de Los Lagos;Guía de Aventura;950000;Portugués;Español
+8;Trekking Alerce Andino;Puerto Montt;6 horas;40000;25.678.901-9;Diego;Ramírez;Techado;111;Ensenada;Región de Los Lagos;Guía Turístico;700000;Español;Inglés
+9;Lago Todos Los Santos;Petrohué;4 horas;45000;30.864.297-6;Sofía;López;Vicente Pérez Rosales;222;Petrohué;Región de Los Lagos;Guía Cultural;1100000;Español;Alemán
+10;Ruta del Vino;Río Negro;3 horas;20000;37.654.321-8;Roberto;Díaz;Covadonga;444;Maullín;Región de Los Lagos;Guía de Naturaleza;800000;Francés;Español
+11;Avistamiento de Aves;Maullín;5 horas;28000;8.765.432-K;Elena;Vargas;Los Nogales;555;Río Negro;Región de Los Lagos;Guía Turístico;650000;Español;Inglés
