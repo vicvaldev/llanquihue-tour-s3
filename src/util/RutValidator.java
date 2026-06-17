@@ -20,11 +20,11 @@ public class RutValidator {
             throw new InvalidRutException("El RUT no puede ser nulo o vacío.");
         }
 
-        String clean = rut.replaceAll("[.\\s]", "").toUpperCase();
+        String clean = rut.toUpperCase();
 
-        if (!clean.matches("\\d+-[\\dK]")) {
+        if (!clean.matches("\\d{7,8}-[\\dK]")) {
             throw new InvalidRutException(
-                    "Formato de RUT inválido: '" + rut + "'. Debe ser algo como 12.345.678-9.");
+                    "Formato de RUT inválido: '" + rut + "'. Debe ser 12345678-9 o 1234567-K.");
         }
 
         String[] parts = clean.split("-");
