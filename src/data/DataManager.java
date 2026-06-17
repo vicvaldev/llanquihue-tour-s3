@@ -8,10 +8,12 @@ import java.util.stream.*;
 
 /**
  * Utilidad estática encargada de la carga y filtrado de datos de tours.
- * Lee el archivo tours.txt, parsea sus registros y construye objetos
+ * Lee el archivo tours.csv, parsea sus registros y construye objetos
  * Tours con sus respectivos TouristGuide asociados.
  */
 public class DataManager {
+
+    public static final String DELIMITER = ";";
 
     private DataManager() {}
 
@@ -31,7 +33,8 @@ public class DataManager {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(";");
+                if (line.isBlank()) continue;
+                String[] parts = line.split(DELIMITER, -1);
                 if (parts.length >= 16) {
                     try {
                         int id = Integer.parseInt(parts[0].trim());
@@ -67,6 +70,55 @@ public class DataManager {
             e.printStackTrace();
         }
         return tours;
+    }
+
+    public static int getNextId(String filePath) {
+        int maxId = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.isBlank()) continue;
+                String[] parts = line.split(DELIMITER);
+                if (parts.length >= 1) {
+                    try {
+                        int id = Integer.parseInt(parts[0].trim());
+                        if (id > maxId) maxId = id;
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+        } catch (IOException ignored) {}
+        return maxId + 1;
+    }
+
+    public static void appendTour(String filePath, Tours tour) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
+            String line = String.join(DELIMITER,
+                    String.valueOf(tour.getId()),
+                    valueOf(tour.getProductName()),
+                    valueOf(tour.getLocation()),
+                    valueOf(tour.getDuration()),
+                    String.valueOf(tour.getPrice()),
+                    valueOf(tour.getTouristGuide().getRut()),
+                    valueOf(tour.getTouristGuide().getFirstName()),
+                    valueOf(tour.getTouristGuide().getLastName()),
+                    valueOf(tour.getTouristGuide().getAddress().getStreet()),
+                    valueOf(tour.getTouristGuide().getAddress().getNumber()),
+                    valueOf(tour.getTouristGuide().getAddress().getCity()),
+                    valueOf(tour.getTouristGuide().getAddress().getRegion()),
+                    valueOf(tour.getTouristGuide().getPosition()),
+                    String.valueOf(tour.getTouristGuide().getBaseSalary()),
+                    valueOf(tour.getTouristGuide().getMotherTongue()),
+                    valueOf(tour.getTouristGuide().getSecondLanguage())
+            );
+            bw.write(line);
+            bw.newLine();
+        } catch (IOException e) {
+            System.err.println("Error al guardar el tour: " + e.getMessage());
+        }
+    }
+
+    private static String valueOf(String s) {
+        return s == null ? "" : s;
     }
 
     /**
