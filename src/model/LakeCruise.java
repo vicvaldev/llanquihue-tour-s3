@@ -14,9 +14,9 @@ public class LakeCruise extends TourService {
     public LakeCruise(int id, String name, double durationHours,
                       String boatType, double price, TouristGuide guide) {
         super(id, name, durationHours);
-        this.boatType = boatType;
-        this.price = price;
-        this.guide = guide;
+        setBoatType(boatType);
+        setPrice(price);
+        setGuide(guide);
     }
 
     public String getBoatType() {
@@ -24,14 +24,23 @@ public class LakeCruise extends TourService {
     }
 
     public void setBoatType(String boatType) {
-        this.boatType = boatType;
+        if (boatType == null || boatType.isBlank()) {
+            throw new IllegalArgumentException("El tipo de embarcación no puede estar vacío.");
+        }
+        this.boatType = boatType.trim();
     }
 
     public void setPrice(double price) {
+        if (price <= 0) {
+            throw new IllegalArgumentException("El precio debe ser un valor positivo.");
+        }
         this.price = price;
     }
 
     public void setGuide(TouristGuide guide) {
+        if (guide == null) {
+            throw new IllegalArgumentException("El guía turístico no puede ser nulo.");
+        }
         this.guide = guide;
     }
 
