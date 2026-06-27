@@ -30,7 +30,7 @@ public class Employee extends Person {
                     String position, double baseSalary) throws InvalidRutException {
         super(rut, firstName, lastName, address);
         this.position = position;
-        this.baseSalary = baseSalary;
+        setBaseSalary(baseSalary);
     }
 
     /**
@@ -58,6 +58,9 @@ public class Employee extends Person {
      * @param baseSalary sueldo base del empleado
      */
     public void setBaseSalary(double baseSalary) {
+        if (baseSalary <= 0) {
+            throw new IllegalArgumentException("El sueldo base debe ser un valor positivo.");
+        }
         this.baseSalary = baseSalary;
     }
 
