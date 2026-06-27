@@ -10,13 +10,24 @@ import java.util.stream.*;
 
 /**
  * Utilidad estática encargada de la carga, filtrado y persistencia
- * de servicios turísticos. Lee el archivo tours.csv, parsea sus
- * registros y construye objetos de la jerarquía TourService según
- * la columna "type".
+ * de servicios turísticos. Lee el archivo tours.csv con codificación
+ * UTF-8, parsea sus registros y construye objetos concretos de la
+ * jerarquía {@link TourService} según el valor de la columna "type".
+ * <p>
+ * Incluye validación de cada línea del CSV: si un registro no cumple
+ * las reglas de negocio (tipo desconocido, valores numéricos inválidos,
+ * campos vacíos obligatorios, RUT inválido) se omite con un mensaje
+ * descriptivo que indica el número de línea y la causa, sin interrumpir
+ * la carga del resto del archivo.
+ * </p>
  */
 public class DataManager {
 
+    /**
+     * Delimitador de campos en el archivo CSV.
+     */
     public static final String DELIMITER = ";";
+
     private static final String[] VALID_TYPES =
             {"GastronomicRoute", "LakeCruise", "CulturalExcursion"};
 
@@ -126,6 +137,17 @@ public class DataManager {
         return services;
     }
 
+    /**
+     * Intenta parsear un campo textual como número decimal de forma segura.
+     * Si el campo está vacío o no es un número válido retorna {@code -1},
+     * valor que posteriormente se rechaza en las validaciones de negocio
+     * (todo valor numérico debe ser positivo).
+     *
+     * @param field     valor textual del campo a parsear
+     * @param fieldName nombre descriptivo del campo (solo para depuración)
+     * @return el valor numérico parseado, o {@code -1} si el campo está
+     *         vacío o tiene formato inválido
+     */
     private static double parseDoubleSafe(String field, String fieldName) {
         String trimmed = field.trim();
         if (trimmed.isEmpty()) {
@@ -138,6 +160,23 @@ public class DataManager {
         }
     }
 
+    /**
+     * Construye la instancia concreta de {@link TourService} que
+     * corresponde al tipo indicado, extrayendo de las partes del CSV
+     * el campo adicional específico de cada subclase.
+     *
+     * @param type          tipo de servicio ("GastronomicRoute", "LakeCruise"
+     *                      o "CulturalExcursion")
+     * @param id            identificador único
+     * @param name          nombre del servicio
+     * @param durationHours duración en horas
+     * @param parts         arreglo completo de campos del CSV
+     * @param price         precio del servicio
+     * @param guide         guía turístico asignado
+     * @return instancia de la subclase correspondiente
+     * @throws IllegalArgumentException si {@code type} no es un valor
+     *                                  reconocido
+     */
     private static TourService createService(String type, int id, String name, double durationHours,
                                               String[] parts, double price, TouristGuide guide) {
         switch (type) {
@@ -158,6 +197,14 @@ public class DataManager {
         }
     }
 
+    /**
+     * Calcula el siguiente identificador disponible recorriendo el archivo
+     * CSV y encontrando el valor máximo de ID existente.
+     *
+     * @param filePath ruta al archivo de datos
+     * @return el siguiente ID disponible ({@code maxId + 1}), o {@code 1}
+     *         si el archivo está vacío o no se pudo leer
+     */
     public static int getNextId(String filePath) {
         int maxId = 0;
         try (BufferedReader br = new BufferedReader(
@@ -180,6 +227,16 @@ public class DataManager {
         return maxId + 1;
     }
 
+    /**
+     * Agrega un nuevo servicio turístico al final del archivo CSV,
+     * serializando todos sus campos incluyendo los del guía asociado
+     * y la dirección. El archivo se abre en modo append (adicional)
+     * para no sobrescribir los registros existentes.
+     *
+     * @param filePath ruta al archivo de datos
+     * @param service  servicio turístico a persistir; debe tener un guía
+     *                 asignado no nulo con dirección completa
+     */
     public static void appendService(String filePath, TourService service) {
         TouristGuide guide = service.getGuide();
         if (guide == null) {
@@ -218,6 +275,20 @@ public class DataManager {
         }
     }
 
+    /**
+     * Retorna el valor serializado del campo específico de cada subclase
+     * según su posición en el CSV. Las posiciones son:
+     * <ul>
+     *   <li>{@code index = 0} — número de paradas (GastronomicRoute)</li>
+     *   <li>{@code index = 1} — tipo de embarcación (LakeCruise)</li>
+     *   <li>{@code index = 2} — lugar histórico (CulturalExcursion)</li>
+     * </ul>
+     * Los índices que no corresponden al tipo concreto retornan cadena vacía.
+     *
+     * @param service servicio turístico del cual extraer el campo
+     * @param index   índice posicional del campo en el CSV (0-2)
+     * @return valor del campo específico, o cadena vacía si no aplica
+     */
     private static String specificField(TourService service, int index) {
         switch (service.getServiceType()) {
             case "GastronomicRoute":
@@ -231,16 +302,42 @@ public class DataManager {
         }
     }
 
+    /**
+     * Convierte una cadena a su representación CSV, retornando cadena
+     * vacía si el valor es {@code null}. Evita que valores nulos
+     * escriban el literal "null" en el archivo.
+     *
+     * @param s cadena a convertir, puede ser {@code null}
+     * @return la cadena original o {@code ""} si es {@code null}
+     */
     private static String valueOf(String s) {
         return s == null ? "" : s;
     }
 
+    /**
+     * Filtra una lista de servicios turísticos cuyo precio sea menor
+     * o igual al valor indicado.
+     *
+     * @param list     lista de servicios a filtrar
+     * @param maxPrice precio máximo (inclusive)
+     * @return lista de servicios con precio ≤ {@code maxPrice}
+     */
     public static List<TourService> filterByPrice(List<TourService> list, double maxPrice) {
         return list.stream()
                 .filter(t -> t.getPrice() <= maxPrice)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Filtra una lista de servicios turísticos cuyo guía tenga la
+     * lengua materna indicada. La comparación no distingue entre
+     * mayúsculas y minúsculas.
+     *
+     * @param list         lista de servicios a filtrar
+     * @param motherTongue código ISO de la lengua materna a buscar
+     * @return lista de servicios cuyo guía habla {@code motherTongue}
+     *         como lengua materna
+     */
     public static List<TourService> filterByMotherTongue(List<TourService> list, String motherTongue) {
         return list.stream()
                 .filter(t -> t.getGuide().getMotherTongue()

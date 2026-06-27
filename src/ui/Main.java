@@ -7,6 +7,21 @@ import util.*;
 import java.util.*;
 import java.util.stream.*;
 
+/**
+ * Punto de entrada del sistema Llanquihue Tour. Presenta un menú
+ * interactivo con las siguientes opciones:
+ * <ol>
+ *   <li>Listar todos los servicios turísticos registrados.</li>
+ *   <li>Buscar servicios por precio máximo.</li>
+ *   <li>Buscar servicios por lengua materna del guía.</li>
+ *   <li>Agregar un nuevo servicio (con selección del tipo y validación
+ *       de campos obligatorios y valores positivos).</li>
+ *   <li>Ver el último servicio agregado.</li>
+ *   <li>Salir.</li>
+ * </ol>
+ * Los datos se cargan y persisten en el archivo {@code resources/tours.csv}
+ * a través de la clase {@link data.DataManager}.
+ */
 public class Main {
 
     private static final String DATA_FILE = "resources/tours.csv";
@@ -53,6 +68,9 @@ public class Main {
         scanner.close();
     }
 
+    /**
+     * Imprime el menú principal de opciones en la consola.
+     */
     private static void printMenu() {
         System.out.println("=== LLANQUIHUE TOUR ===");
         System.out.println("1. Listar todos los servicios");
@@ -63,6 +81,12 @@ public class Main {
         System.out.println("6. Salir");
     }
 
+    /**
+     * Muestra todos los servicios turísticos registrados utilizando
+     * el método {@code toString()} polimórfico de cada subclase.
+     *
+     * @param services lista de servicios a mostrar
+     */
     private static void listAll(List<TourService> services) {
         if (services.isEmpty()) {
             System.out.println("No hay servicios registrados.");
@@ -72,6 +96,10 @@ public class Main {
         services.forEach(System.out::println);
     }
 
+    /**
+     * Carga nuevamente el archivo CSV y muestra el último servicio
+     * registrado (última línea del archivo).
+     */
     private static void showLastAdded() {
         List<TourService> all = DataManager.loadServices(DATA_FILE);
         if (all.isEmpty()) {
@@ -83,6 +111,13 @@ public class Main {
         System.out.println(last);
     }
 
+    /**
+     * Solicita un precio máximo al usuario y muestra todos los
+     * servicios con precio menor o igual al valor ingresado.
+     *
+     * @param scanner  escáner conectado a la entrada estándar
+     * @param services lista de servicios sobre la cual filtrar
+     */
     private static void searchByPrice(Scanner scanner, List<TourService> services) {
         double maxPrice = readDouble(scanner, "Ingrese el precio máximo: ");
         List<TourService> result = DataManager.filterByPrice(services, maxPrice);
@@ -95,6 +130,14 @@ public class Main {
         System.out.println("(" + result.size() + " servicios encontrados)");
     }
 
+    /**
+     * Solicita un código ISO de idioma al usuario y muestra los
+     * servicios cuyo guía tiene esa lengua materna. Previamente
+     * lista los idiomas disponibles en los datos cargados.
+     *
+     * @param scanner  escáner conectado a la entrada estándar
+     * @param services lista de servicios sobre la cual filtrar
+     */
     private static void searchByMotherTongue(Scanner scanner, List<TourService> services) {
         showAvailableLanguages(services);
         String motherTongue = readLanguageCode(scanner, "Ingrese código ISO de la lengua materna: ");
@@ -108,6 +151,12 @@ public class Main {
         System.out.println("(" + result.size() + " servicios encontrados)");
     }
 
+    /**
+     * Muestra los códigos ISO de idiomas disponibles como lengua
+     * materna entre los guías de los servicios cargados.
+     *
+     * @param services lista de servicios de la cual extraer los idiomas
+     */
     private static void showAvailableLanguages(List<TourService> services) {
         Set<String> codes = services.stream()
                 .map(t -> t.getGuide().getMotherTongue())
@@ -124,6 +173,16 @@ public class Main {
         return ISO_LANGUAGES.getOrDefault(isoCode, isoCode);
     }
 
+    /**
+     * Guía al usuario a través de un formulario para agregar un nuevo
+     * servicio turístico. El usuario debe seleccionar el tipo de
+     * servicio y luego ingresar los campos comunes y específicos con
+     * validación de valores positivos para campos numéricos.
+     *
+     * @param scanner  escáner conectado a la entrada estándar
+     * @param services lista actual de servicios (se usa solo para
+     *                 mostrar idiomas disponibles)
+     */
     private static void addService(Scanner scanner, List<TourService> services) {
         System.out.println("=== Agregar nuevo servicio ===");
         System.out.println("Seleccione el tipo de servicio:");
@@ -202,6 +261,16 @@ public class Main {
         }
     }
 
+    /**
+     * Lee un valor decimal desde la entrada estándar y valida que
+     * sea un número positivo (> 0). Reintenta la lectura hasta que
+     * el usuario ingrese un valor válido.
+     *
+     * @param scanner  escáner conectado a la entrada estándar
+     * @param prompt   mensaje mostrado al usuario
+     * @param errorMsg mensaje de error cuando el valor no es positivo
+     * @return número decimal positivo ingresado por el usuario
+     */
     private static double readPositiveDouble(Scanner scanner, String prompt, String errorMsg) {
         while (true) {
             double value = readDoubleMandatory(scanner, prompt);
@@ -212,6 +281,16 @@ public class Main {
         }
     }
 
+    /**
+     * Lee un valor entero desde la entrada estándar y valida que
+     * sea un número positivo (> 0). Reintenta la lectura hasta que
+     * el usuario ingrese un valor válido.
+     *
+     * @param scanner  escáner conectado a la entrada estándar
+     * @param prompt   mensaje mostrado al usuario
+     * @param errorMsg mensaje de error cuando el valor no es positivo
+     * @return número entero positivo ingresado por el usuario
+     */
     private static int readPositiveInt(Scanner scanner, String prompt, String errorMsg) {
         while (true) {
             int value = readIntMandatory(scanner, prompt);
@@ -222,6 +301,14 @@ public class Main {
         }
     }
 
+    /**
+     * Lee un campo de texto obligatorio. Reintenta hasta que el
+     * usuario ingrese un valor no vacío.
+     *
+     * @param scanner escáner conectado a la entrada estándar
+     * @param prompt  mensaje mostrado al usuario
+     * @return cadena no vacía ingresada por el usuario
+     */
     private static String readMandatory(Scanner scanner, String prompt) {
         String input;
         do {
@@ -234,6 +321,14 @@ public class Main {
         return input;
     }
 
+    /**
+     * Lee un valor decimal obligatorio. Reintenta hasta que el
+     * usuario ingrese un número válido.
+     *
+     * @param scanner escáner conectado a la entrada estándar
+     * @param prompt  mensaje mostrado al usuario
+     * @return número decimal ingresado por el usuario
+     */
     private static double readDoubleMandatory(Scanner scanner, String prompt) {
         while (true) {
             String input = readMandatory(scanner, prompt);
@@ -245,6 +340,14 @@ public class Main {
         }
     }
 
+    /**
+     * Lee un valor entero obligatorio. Reintenta hasta que el
+     * usuario ingrese un número entero válido.
+     *
+     * @param scanner escáner conectado a la entrada estándar
+     * @param prompt  mensaje mostrado al usuario
+     * @return número entero ingresado por el usuario
+     */
     private static int readIntMandatory(Scanner scanner, String prompt) {
         while (true) {
             String input = readMandatory(scanner, prompt);
@@ -256,6 +359,14 @@ public class Main {
         }
     }
 
+    /**
+     * Lee un código ISO de idioma obligatorio y valida que exista
+     * en el mapa de idiomas soportados.
+     *
+     * @param scanner escáner conectado a la entrada estándar
+     * @param prompt  mensaje mostrado al usuario
+     * @return código ISO válido ingresado por el usuario
+     */
     private static String readLanguageCode(Scanner scanner, String prompt) {
         while (true) {
             String input = readMandatory(scanner, prompt);
@@ -266,6 +377,13 @@ public class Main {
         }
     }
 
+    /**
+     * Lee un RUT chileno obligatorio y lo valida con el algoritmo
+     * del módulo 11 mediante {@link RutValidator}.
+     *
+     * @param scanner escáner conectado a la entrada estándar
+     * @return RUT válido ingresado por el usuario
+     */
     private static String readRut(Scanner scanner) {
         while (true) {
             String input = readMandatory(scanner, "RUT del guía (formato 12345678-9 o 1234567-K): ");
@@ -278,6 +396,15 @@ public class Main {
         }
     }
 
+    /**
+     * Lee un código ISO de idioma opcional. Si el usuario presiona
+     * Enter sin ingresar valor retorna cadena vacía; en caso contrario
+     * valida que el código exista en el mapa de idiomas soportados.
+     *
+     * @param scanner   escáner conectado a la entrada estándar
+     * @param fieldName nombre descriptivo del campo para el mensaje
+     * @return código ISO válido o cadena vacía si se omite
+     */
     private static String readLanguageOptional(Scanner scanner, String fieldName) {
         while (true) {
             System.out.print(fieldName + " (código ISO, opcional, presione Enter para omitir): ");
@@ -289,12 +416,28 @@ public class Main {
         }
     }
 
+    /**
+     * Lee un campo de texto opcional. Si el usuario presiona Enter
+     * sin ingresar valor retorna cadena vacía.
+     *
+     * @param scanner   escáner conectado a la entrada estándar
+     * @param fieldName nombre descriptivo del campo para el mensaje
+     * @return cadena ingresada o cadena vacía si se omite
+     */
     private static String readOptional(Scanner scanner, String fieldName) {
         System.out.print(fieldName + " (opcional, presione Enter para omitir): ");
         String input = scanner.nextLine().trim();
         return input;
     }
 
+    /**
+     * Lee un valor decimal sin validación de signo (puede ser cero
+     * o negativo). Se utiliza para el filtro de precio máximo.
+     *
+     * @param scanner escáner conectado a la entrada estándar
+     * @param prompt  mensaje mostrado al usuario
+     * @return número decimal ingresado por el usuario
+     */
     private static double readDouble(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -307,6 +450,13 @@ public class Main {
         }
     }
 
+    /**
+     * Lee un valor entero para la selección de opción del menú.
+     *
+     * @param scanner escáner conectado a la entrada estándar
+     * @param prompt  mensaje mostrado al usuario
+     * @return número entero ingresado por el usuario
+     */
     private static int readInt(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);

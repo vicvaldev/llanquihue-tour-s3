@@ -55,7 +55,10 @@ public class Employee extends Person {
     }
 
     /**
-     * @param baseSalary sueldo base del empleado
+     * Asigna el sueldo base del empleado.
+     *
+     * @param baseSalary sueldo base del empleado, debe ser un valor positivo
+     * @throws IllegalArgumentException si {@code baseSalary <= 0}
      */
     public void setBaseSalary(double baseSalary) {
         if (baseSalary <= 0) {
