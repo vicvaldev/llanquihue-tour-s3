@@ -145,19 +145,22 @@ public class Main {
         }
 
         String name = readMandatory(scanner, "Nombre del servicio: ");
-        double durationHours = readDoubleMandatory(scanner, "Duración (horas): ");
+        double durationHours = readPositiveDouble(scanner, "Duración (horas): ", "La duración debe ser un número positivo.");
 
         int numberOfStops = 0;
         String boatType = "";
         String historicalPlace = "";
 
         switch (serviceType) {
-            case "GastronomicRoute" -> numberOfStops = readIntMandatory(scanner, "Número de paradas: ");
-            case "LakeCruise" -> boatType = readMandatory(scanner, "Tipo de embarcación: ");
-            case "CulturalExcursion" -> historicalPlace = readMandatory(scanner, "Lugar histórico: ");
+            case "GastronomicRoute" ->
+                numberOfStops = readPositiveInt(scanner, "Número de paradas: ", "El número de paradas debe ser un entero positivo.");
+            case "LakeCruise" ->
+                boatType = readMandatory(scanner, "Tipo de embarcación: ");
+            case "CulturalExcursion" ->
+                historicalPlace = readMandatory(scanner, "Lugar histórico: ");
         }
 
-        double price = readDoubleMandatory(scanner, "Precio: ");
+        double price = readPositiveDouble(scanner, "Precio: ", "El precio debe ser un valor positivo.");
         String rut = readRut(scanner);
         String firstName = readMandatory(scanner, "Nombre del guía: ");
         String lastName = readMandatory(scanner, "Apellido del guía: ");
@@ -166,8 +169,8 @@ public class Main {
         String city = readOptional(scanner, "Ciudad");
         String region = readOptional(scanner, "Región");
         String position = readOptional(scanner, "Cargo");
-        double baseSalary = readDoubleMandatory(scanner, "Sueldo base: ");
-        showAvailableLanguages(DataManager.loadServices(DATA_FILE));
+        double baseSalary = readPositiveDouble(scanner, "Sueldo base: ", "El sueldo base debe ser un valor positivo.");
+        showAvailableLanguages(services);
         String motherTongue = readLanguageCode(scanner, "Lengua materna (código ISO): ");
         String secondLanguage = readLanguageOptional(scanner, "Segunda lengua");
 
@@ -186,7 +189,7 @@ public class Main {
                 case "CulturalExcursion" ->
                     service = new CulturalExcursion(id, name, durationHours, historicalPlace, price, guide);
                 default -> {
-                    System.out.println("Error: tipo de servicio no reconocido.");
+                    System.out.println("Error interno: tipo de servicio no reconocido.");
                     return;
                 }
             }
@@ -195,9 +198,27 @@ public class Main {
             System.out.println("Servicio agregado exitosamente (ID " + id + ").");
 
         } catch (InvalidRutException e) {
-            System.out.println("Error inesperado: " + e.getMessage() + " El servicio no fue guardado.");
-        } catch (NumberFormatException e) {
-            System.out.println("Error: formato de número inválido. El servicio no fue guardado.");
+            System.out.println("RUT inválido (" + e.getMessage() + "). El servicio no fue guardado.");
+        }
+    }
+
+    private static double readPositiveDouble(Scanner scanner, String prompt, String errorMsg) {
+        while (true) {
+            double value = readDoubleMandatory(scanner, prompt);
+            if (value > 0) {
+                return value;
+            }
+            System.out.println(errorMsg);
+        }
+    }
+
+    private static int readPositiveInt(Scanner scanner, String prompt, String errorMsg) {
+        while (true) {
+            int value = readIntMandatory(scanner, prompt);
+            if (value > 0) {
+                return value;
+            }
+            System.out.println(errorMsg);
         }
     }
 
