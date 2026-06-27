@@ -14,9 +14,9 @@ public class GastronomicRoute extends TourService {
     public GastronomicRoute(int id, String name, double durationHours,
                             int numberOfStops, double price, TouristGuide guide) {
         super(id, name, durationHours);
-        this.numberOfStops = numberOfStops;
-        this.price = price;
-        this.guide = guide;
+        setNumberOfStops(numberOfStops);
+        setPrice(price);
+        setGuide(guide);
     }
 
     public int getNumberOfStops() {
@@ -24,14 +24,23 @@ public class GastronomicRoute extends TourService {
     }
 
     public void setNumberOfStops(int numberOfStops) {
+        if (numberOfStops <= 0) {
+            throw new IllegalArgumentException("El número de paradas debe ser positivo.");
+        }
         this.numberOfStops = numberOfStops;
     }
 
     public void setPrice(double price) {
+        if (price <= 0) {
+            throw new IllegalArgumentException("El precio debe ser un valor positivo.");
+        }
         this.price = price;
     }
 
     public void setGuide(TouristGuide guide) {
+        if (guide == null) {
+            throw new IllegalArgumentException("El guía turístico no puede ser nulo.");
+        }
         this.guide = guide;
     }
 
