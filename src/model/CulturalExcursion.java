@@ -14,9 +14,9 @@ public class CulturalExcursion extends TourService {
     public CulturalExcursion(int id, String name, double durationHours,
                              String historicalPlace, double price, TouristGuide guide) {
         super(id, name, durationHours);
-        this.historicalPlace = historicalPlace;
-        this.price = price;
-        this.guide = guide;
+        setHistoricalPlace(historicalPlace);
+        setPrice(price);
+        setGuide(guide);
     }
 
     public String getHistoricalPlace() {
@@ -24,14 +24,23 @@ public class CulturalExcursion extends TourService {
     }
 
     public void setHistoricalPlace(String historicalPlace) {
-        this.historicalPlace = historicalPlace;
+        if (historicalPlace == null || historicalPlace.isBlank()) {
+            throw new IllegalArgumentException("El lugar histórico no puede estar vacío.");
+        }
+        this.historicalPlace = historicalPlace.trim();
     }
 
     public void setPrice(double price) {
+        if (price <= 0) {
+            throw new IllegalArgumentException("El precio debe ser un valor positivo.");
+        }
         this.price = price;
     }
 
     public void setGuide(TouristGuide guide) {
+        if (guide == null) {
+            throw new IllegalArgumentException("El guía turístico no puede ser nulo.");
+        }
         this.guide = guide;
     }
 
