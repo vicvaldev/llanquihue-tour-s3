@@ -26,7 +26,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        List<Tours> tours = DataManager.loadTours(DATA_FILE);
+        List<TourService> services = DataManager.loadServices(DATA_FILE);
         Scanner scanner = new Scanner(System.in);
         int option;
 
@@ -36,12 +36,12 @@ public class Main {
             System.out.println();
 
             switch (option) {
-                case 1 -> listAll(tours);
-                case 2 -> searchByPrice(scanner, tours);
-                case 3 -> searchByMotherTongue(scanner, tours);
+                case 1 -> listAll(services);
+                case 2 -> searchByPrice(scanner, services);
+                case 3 -> searchByMotherTongue(scanner, services);
                 case 4 -> {
-                    addTour(scanner, tours);
-                    tours = DataManager.loadTours(DATA_FILE);
+                    addService(scanner, services);
+                    services = DataManager.loadServices(DATA_FILE);
                 }
                 case 5 -> showLastAdded();
                 case 6 -> System.out.println("¡Hasta luego!");
@@ -55,65 +55,108 @@ public class Main {
 
     private static void printMenu() {
         System.out.println("=== LLANQUIHUE TOUR ===");
-        System.out.println("1. Listar todos los tours");
+        System.out.println("1. Listar todos los servicios");
         System.out.println("2. Buscar por precio máximo");
         System.out.println("3. Buscar por lengua materna del guía");
-        System.out.println("4. Agregar un nuevo tour");
-        System.out.println("5. Ver último tour agregado");
+        System.out.println("4. Agregar un nuevo servicio");
+        System.out.println("5. Ver último servicio agregado");
         System.out.println("6. Salir");
     }
 
-    private static void listAll(List<Tours> tours) {
-        if (tours.isEmpty()) {
-            System.out.println("No hay tours registrados.");
+    private static void listAll(List<TourService> services) {
+        if (services.isEmpty()) {
+            System.out.println("No hay servicios registrados.");
             return;
         }
-        System.out.println("=== Todos los tours (" + tours.size() + ") ===");
-        tours.forEach(System.out::println);
+        System.out.println("=== Todos los servicios (" + services.size() + ") ===");
+        services.forEach(System.out::println);
     }
 
     private static void showLastAdded() {
-        List<Tours> all = DataManager.loadTours(DATA_FILE);
+        List<TourService> all = DataManager.loadServices(DATA_FILE);
         if (all.isEmpty()) {
-            System.out.println("No hay tours registrados.");
+            System.out.println("No hay servicios registrados.");
             return;
         }
-        Tours last = all.get(all.size() - 1);
-        System.out.println("=== Último tour registrado ===");
+        TourService last = all.get(all.size() - 1);
+        System.out.println("=== Último servicio registrado ===");
         System.out.println(last);
     }
 
-    private static void searchByPrice(Scanner scanner, List<Tours> tours) {
+    private static void searchByPrice(Scanner scanner, List<TourService> services) {
         double maxPrice = readDouble(scanner, "Ingrese el precio máximo: ");
-        List<Tours> result = DataManager.filterByPrice(tours, maxPrice);
+        List<TourService> result = DataManager.filterByPrice(services, maxPrice);
         if (result.isEmpty()) {
-            System.out.println("No se encontraron tours con precio <= $" + String.format("%.0f", maxPrice));
+            System.out.println("No se encontraron servicios con precio <= $" + String.format("%.0f", maxPrice));
             return;
         }
-        System.out.println("=== Tours con precio <= $" + String.format("%.0f", maxPrice) + " ===");
+        System.out.println("=== Servicios con precio <= $" + String.format("%.0f", maxPrice) + " ===");
         result.forEach(System.out::println);
-        System.out.println("(" + result.size() + " tours encontrados)");
+        System.out.println("(" + result.size() + " servicios encontrados)");
     }
 
-    private static void searchByMotherTongue(Scanner scanner, List<Tours> tours) {
-        showAvailableLanguages(tours);
+    private static void searchByMotherTongue(Scanner scanner, List<TourService> services) {
+        showAvailableLanguages(services);
         String motherTongue = readLanguageCode(scanner, "Ingrese código ISO de la lengua materna: ");
-        List<Tours> result = DataManager.filterByMotherTongue(tours, motherTongue);
+        List<TourService> result = DataManager.filterByMotherTongue(services, motherTongue);
         if (result.isEmpty()) {
-            System.out.println("No se encontraron tours con guía de lengua materna '" + label(motherTongue) + "'");
+            System.out.println("No se encontraron servicios con guía de lengua materna '" + label(motherTongue) + "'");
             return;
         }
-        System.out.println("=== Tours con guía de lengua materna '" + label(motherTongue) + "' ===");
+        System.out.println("=== Servicios con guía de lengua materna '" + label(motherTongue) + "' ===");
         result.forEach(System.out::println);
-        System.out.println("(" + result.size() + " tours encontrados)");
+        System.out.println("(" + result.size() + " servicios encontrados)");
     }
 
-    private static void addTour(Scanner scanner, List<Tours> tours) {
-        System.out.println("=== Agregar nuevo tour ===");
+    private static void showAvailableLanguages(List<TourService> services) {
+        Set<String> codes = services.stream()
+                .map(t -> t.getGuide().getMotherTongue())
+                .collect(Collectors.toSet());
+        if (codes.isEmpty()) codes = ISO_LANGUAGES.keySet();
+        System.out.print("Idiomas disponibles: ");
+        System.out.println(codes.stream()
+                .sorted()
+                .map(c -> c + " (" + label(c) + ")")
+                .collect(Collectors.joining(", ")));
+    }
 
-        String productName = readMandatory(scanner, "Nombre del tour: ");
-        String location = readOptional(scanner, "Ubicación");
-        String duration = readOptional(scanner, "Duración");
+    private static String label(String isoCode) {
+        return ISO_LANGUAGES.getOrDefault(isoCode, isoCode);
+    }
+
+    private static void addService(Scanner scanner, List<TourService> services) {
+        System.out.println("=== Agregar nuevo servicio ===");
+        System.out.println("Seleccione el tipo de servicio:");
+        System.out.println("1. Ruta Gastronómica (GastronomicRoute)");
+        System.out.println("2. Paseo Lacustre (LakeCruise)");
+        System.out.println("3. Excursión Cultural (CulturalExcursion)");
+        int typeOption = readInt(scanner, "Opción: ");
+        System.out.println();
+
+        String serviceType;
+        switch (typeOption) {
+            case 1 -> serviceType = "GastronomicRoute";
+            case 2 -> serviceType = "LakeCruise";
+            case 3 -> serviceType = "CulturalExcursion";
+            default -> {
+                System.out.println("Opción inválida. Operación cancelada.");
+                return;
+            }
+        }
+
+        String name = readMandatory(scanner, "Nombre del servicio: ");
+        double durationHours = readDoubleMandatory(scanner, "Duración (horas): ");
+
+        int numberOfStops = 0;
+        String boatType = "";
+        String historicalPlace = "";
+
+        switch (serviceType) {
+            case "GastronomicRoute" -> numberOfStops = readIntMandatory(scanner, "Número de paradas: ");
+            case "LakeCruise" -> boatType = readMandatory(scanner, "Tipo de embarcación: ");
+            case "CulturalExcursion" -> historicalPlace = readMandatory(scanner, "Lugar histórico: ");
+        }
+
         double price = readDoubleMandatory(scanner, "Precio: ");
         String rut = readRut(scanner);
         String firstName = readMandatory(scanner, "Nombre del guía: ");
@@ -124,24 +167,37 @@ public class Main {
         String region = readOptional(scanner, "Región");
         String position = readOptional(scanner, "Cargo");
         double baseSalary = readDoubleMandatory(scanner, "Sueldo base: ");
-        showAvailableLanguages(tours);
+        showAvailableLanguages(DataManager.loadServices(DATA_FILE));
         String motherTongue = readLanguageCode(scanner, "Lengua materna (código ISO): ");
         String secondLanguage = readLanguageOptional(scanner, "Segunda lengua");
 
         try {
             Address address = new Address(street, number, city, region);
-            TouristGuide guide = new TouristGuide(rut, firstName, lastName, address,
-                    position, baseSalary, motherTongue, secondLanguage);
+            TouristGuide guide = new TouristGuide(rut, firstName, lastName,
+                    address, position, baseSalary, motherTongue, secondLanguage);
             int id = DataManager.getNextId(DATA_FILE);
-            Tours tour = new Tours(id, productName, price, location, duration, guide);
 
-            DataManager.appendTour(DATA_FILE, tour);
-            System.out.println("Tour agregado exitosamente (ID " + id + ").");
+            TourService service;
+            switch (serviceType) {
+                case "GastronomicRoute" ->
+                    service = new GastronomicRoute(id, name, durationHours, numberOfStops, price, guide);
+                case "LakeCruise" ->
+                    service = new LakeCruise(id, name, durationHours, boatType, price, guide);
+                case "CulturalExcursion" ->
+                    service = new CulturalExcursion(id, name, durationHours, historicalPlace, price, guide);
+                default -> {
+                    System.out.println("Error: tipo de servicio no reconocido.");
+                    return;
+                }
+            }
+
+            DataManager.appendService(DATA_FILE, service);
+            System.out.println("Servicio agregado exitosamente (ID " + id + ").");
 
         } catch (InvalidRutException e) {
-            System.out.println("Error inesperado: " + e.getMessage() + " El tour no fue guardado.");
+            System.out.println("Error inesperado: " + e.getMessage() + " El servicio no fue guardado.");
         } catch (NumberFormatException e) {
-            System.out.println("Error: formato de número inválido. El tour no fue guardado.");
+            System.out.println("Error: formato de número inválido. El servicio no fue guardado.");
         }
     }
 
@@ -157,20 +213,26 @@ public class Main {
         return input;
     }
 
-    private static void showAvailableLanguages(List<Tours> tours) {
-        Set<String> codes = tours.stream()
-                .map(t -> t.getTouristGuide().getMotherTongue())
-                .collect(Collectors.toSet());
-        if (codes.isEmpty()) codes = ISO_LANGUAGES.keySet();
-        System.out.print("Idiomas disponibles: ");
-        System.out.println(codes.stream()
-                .sorted()
-                .map(c -> c + " (" + label(c) + ")")
-                .collect(Collectors.joining(", ")));
+    private static double readDoubleMandatory(Scanner scanner, String prompt) {
+        while (true) {
+            String input = readMandatory(scanner, prompt);
+            try {
+                return Double.parseDouble(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Debe ingresar un número válido.");
+            }
+        }
     }
 
-    private static String label(String isoCode) {
-        return ISO_LANGUAGES.getOrDefault(isoCode, isoCode);
+    private static int readIntMandatory(Scanner scanner, String prompt) {
+        while (true) {
+            String input = readMandatory(scanner, prompt);
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Debe ingresar un número entero válido.");
+            }
+        }
     }
 
     private static String readLanguageCode(Scanner scanner, String prompt) {
@@ -216,17 +278,6 @@ public class Main {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
-            try {
-                return Double.parseDouble(input);
-            } catch (NumberFormatException e) {
-                System.out.println("Debe ingresar un número válido.");
-            }
-        }
-    }
-
-    private static double readDoubleMandatory(Scanner scanner, String prompt) {
-        while (true) {
-            String input = readMandatory(scanner, prompt);
             try {
                 return Double.parseDouble(input);
             } catch (NumberFormatException e) {
