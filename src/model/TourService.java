@@ -14,9 +14,9 @@ public abstract class TourService {
     public TourService() {}
 
     public TourService(int id, String name, double durationHours) {
-        this.id = id;
-        this.name = name;
-        this.durationHours = durationHours;
+        setId(id);
+        setName(name);
+        setDurationHours(durationHours);
     }
 
     public int getId() {
@@ -24,6 +24,9 @@ public abstract class TourService {
     }
 
     public void setId(int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("El ID debe ser un número positivo.");
+        }
         this.id = id;
     }
 
@@ -32,7 +35,10 @@ public abstract class TourService {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("El nombre del servicio no puede estar vacío.");
+        }
+        this.name = name.trim();
     }
 
     public double getDurationHours() {
@@ -40,6 +46,9 @@ public abstract class TourService {
     }
 
     public void setDurationHours(double durationHours) {
+        if (durationHours <= 0) {
+            throw new IllegalArgumentException("La duración debe ser un número positivo.");
+        }
         this.durationHours = durationHours;
     }
 
