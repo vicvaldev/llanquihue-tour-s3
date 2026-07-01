@@ -124,6 +124,20 @@ public class LakeCruise extends TourService {
     }
 
     /**
+     * Muestra por consola la información completa del paseo lacustre,
+     * incluyendo los campos heredados y los específicos de esta subclase.
+     */
+    @Override
+    public void displayInformation() {
+        super.displayInformation();
+        String boat = (boatType != null && !boatType.isBlank()) ? boatType : "datos no encontrados";
+        System.out.println("Tipo de embarcación: " + boat);
+        System.out.println("Precio: $" + String.format("%.0f", price));
+        String guideName = (guide != null) ? guide.getFirstName() + " " + guide.getLastName() : "datos no encontrados";
+        System.out.println("Guía: " + guideName);
+    }
+
+    /**
      * Retorna una representación JSON completa del paseo lacustre,
      * incluyendo los campos heredados y los específicos de esta subclase.
      *

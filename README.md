@@ -40,7 +40,7 @@ TourService  (abstracta)
   └── CulturalExcursion
 ```
 
-Cada subclase implementa `getPrice()`, `getGuide()` y `getServiceType()` como métodos abstractos de `TourService`, lo que permite operar polimórficamente sin usar `instanceof`.
+Cada subclase implementa `getPrice()`, `getGuide()` y `getServiceType()` como métodos abstractos de `TourService`, y sobrescribe `displayInformation()` para exponer su información específica, lo que permite operar polimórficamente sin usar `instanceof`.
 
 ## Clases implementadas
 
@@ -50,14 +50,14 @@ Cada subclase implementa `getPrice()`, `getGuide()` y `getServiceType()` como m�
 | `Person` | model | Clase base con RUT, nombre, apellido y dirección. Valida RUT en constructor y setter. |
 | `Employee` | model | Hereda de `Person`. Incorpora cargo y sueldo base (validado > 0). |
 | `TouristGuide` | model | Hereda de `Employee`. Agrega lengua materna y segunda lengua del guía. |
-| `TourService` | model | Superclase abstracta con `id`, `name` y `durationHours`. Define métodos abstractos `getPrice()`, `getGuide()`, `getServiceType()`. |
-| `GastronomicRoute` | model | Hereda de `TourService`. Agrega `numberOfStops` (validado > 0), `price` (> 0) y `guide` (composición con `TouristGuide`). |
-| `LakeCruise` | model | Hereda de `TourService`. Agrega `boatType` (no vacío), `price` (> 0) y `guide` (composición). |
-| `CulturalExcursion` | model | Hereda de `TourService`. Agrega `historicalPlace` (no vacío), `price` (> 0) y `guide` (composición). |
+| `TourService` | model | Superclase abstracta con `id`, `name` y `durationHours`. Define métodos abstractos `getPrice()`, `getGuide()`, `getServiceType()`. Incluye `displayInformation()` con implementación base. |
+| `GastronomicRoute` | model | Hereda de `TourService`. Agrega `numberOfStops` (validado > 0), `price` (> 0) y `guide` (composición con `TouristGuide`). Sobrescribe `displayInformation()` con datos de paradas, precio y guía. |
+| `LakeCruise` | model | Hereda de `TourService`. Agrega `boatType` (no vacío), `price` (> 0) y `guide` (composición). Sobrescribe `displayInformation()` con datos de embarcación, precio y guía. |
+| `CulturalExcursion` | model | Hereda de `TourService`. Agrega `historicalPlace` (no vacío), `price` (> 0) y `guide` (composición). Sobrescribe `displayInformation()` con datos de lugar histórico, precio y guía. |
 | `DataManager` | data | Utilidad estática que lee `resources/tours.csv`, construye objetos de la jerarquía `TourService` según la columna `type`, filtra por precio o lengua materna del guía, y persiste nuevos servicios. Incluye validación de datos y codificación UTF-8. |
 | `InvalidRutException` | util | Excepción personalizada para RUT inválido. |
 | `RutValidator` | util | Implementa el algoritmo de validación de RUT chileno (módulo 11). |
-| `Main` | ui | Punto de entrada con menú interactivo: listar, buscar por precio, buscar por lengua materna, agregar nuevo servicio (con selección de tipo) y salir. |
+| `Main` | ui | Punto de entrada con menú interactivo: listar, buscar por precio, buscar por lengua materna, agregar nuevo servicio, filtrar por tipo (demostración polimórfica) y salir. |
 
 ## Menú interactivo
 
@@ -79,6 +79,7 @@ Cada subclase implementa `getPrice()`, `getGuide()` y `getServiceType()` como m�
 4. **Agregar un nuevo servicio** — Permite elegir el tipo (Ruta Gastronómica, Paseo Lacustre o Excursión Cultural) y completar campos comunes y específicos. Todos los valores numéricos deben ser positivos. El RUT se valida con el algoritmo módulo 11.
 5. **Ver último servicio agregado** — Muestra el último registro del archivo CSV.
 6. **Salir** — Termina la ejecución.
+7. **Filtrar servicios por tipo** — Demostración de polimorfismo: recorre la colección con un `for-each` usando referencias `TourService`, filtra mediante `getServiceType()` (abstracto → resuelto en cada subclase) y despliega con `displayInformation()` (sobrescrito en cada subclase). Sin `instanceof`. Campos nulos o vacíos muestran "datos no encontrados".
 
 ### Validaciones incluidas
 

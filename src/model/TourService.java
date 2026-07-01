@@ -139,6 +139,19 @@ public abstract class TourService {
     public abstract String getServiceType();
 
     /**
+     * Muestra por consola la información completa del servicio
+     * turístico. Las subclases deben sobrescribir este método
+     * agregando los datos específicos de cada tipo mediante una
+     * llamada a {@code super.displayInformation()}.
+     */
+    public void displayInformation() {
+        System.out.println("Nombre: " + name);
+        System.out.println("ID: " + id);
+        System.out.println("Duración: " + durationHours + " horas");
+        System.out.println("Tipo: " + getServiceType());
+    }
+
+    /**
      * Retorna una representación JSON del servicio con los campos
      * comunes: id, nombre y duración en horas. Las subclases extienden
      * este formato agregando sus atributos específicos y el precio.

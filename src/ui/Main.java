@@ -60,6 +60,7 @@ public class Main {
                 }
                 case 5 -> showLastAdded();
                 case 6 -> System.out.println("¡Hasta luego!");
+                case 7 -> filterByType(scanner, services);
                 default -> System.out.println("Opción inválida. Intente nuevamente.");
             }
             System.out.println();
@@ -79,6 +80,7 @@ public class Main {
         System.out.println("4. Agregar un nuevo servicio");
         System.out.println("5. Ver último servicio agregado");
         System.out.println("6. Salir");
+        System.out.println("7. Filtrar servicios por tipo");
     }
 
     /**
@@ -94,6 +96,52 @@ public class Main {
         }
         System.out.println("=== Todos los servicios (" + services.size() + ") ===");
         services.forEach(System.out::println);
+    }
+
+    /**
+     * Solicita al usuario un tipo de servicio y muestra únicamente
+     * aquellos servicios cuya clase concreta coincide con el tipo
+     * seleccionado. El filtrado utiliza el método polimórfico
+     * {@link TourService#getServiceType()} y el despliegue utiliza
+     * {@link TourService#displayInformation()}, demostrando el
+     * comportamiento polimórfico sin usar {@code instanceof}.
+     *
+     * @param scanner  escáner conectado a la entrada estándar
+     * @param services lista de servicios sobre la cual filtrar
+     */
+    private static void filterByType(Scanner scanner, List<TourService> services) {
+        System.out.println("=== Filtrar servicios por tipo ===");
+        System.out.println("1. GastronomicRoute (Ruta Gastronómica)");
+        System.out.println("2. LakeCruise (Paseo Lacustre)");
+        System.out.println("3. CulturalExcursion (Excursión Cultural)");
+        int typeOption = readInt(scanner, "Seleccione el tipo: ");
+
+        String targetType;
+        switch (typeOption) {
+            case 1 -> targetType = "GastronomicRoute";
+            case 2 -> targetType = "LakeCruise";
+            case 3 -> targetType = "CulturalExcursion";
+            default -> {
+                System.out.println("Opción inválida.");
+                return;
+            }
+        }
+
+        boolean found = false;
+        for (TourService service : services) {
+            if (service.getServiceType().equals(targetType)) {
+                if (!found) {
+                    System.out.println("=== Servicios de tipo " + targetType + " ===");
+                    found = true;
+                }
+                System.out.println();
+                service.displayInformation();
+            }
+        }
+
+        if (!found) {
+            System.out.println("No se encontraron servicios del tipo \"" + targetType + "\".");
+        }
     }
 
     /**

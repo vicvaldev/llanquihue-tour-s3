@@ -121,6 +121,20 @@ public class GastronomicRoute extends TourService {
     }
 
     /**
+     * Muestra por consola la información completa de la ruta
+     * gastronómica, incluyendo los campos heredados y los específicos
+     * de esta subclase.
+     */
+    @Override
+    public void displayInformation() {
+        super.displayInformation();
+        System.out.println("Número de paradas: " + numberOfStops);
+        System.out.println("Precio: $" + String.format("%.0f", price));
+        String guideName = (guide != null) ? guide.getFirstName() + " " + guide.getLastName() : "datos no encontrados";
+        System.out.println("Guía: " + guideName);
+    }
+
+    /**
      * Retorna una representación JSON completa de la ruta gastronómica,
      * incluyendo los campos heredados y los específicos de esta subclase.
      *

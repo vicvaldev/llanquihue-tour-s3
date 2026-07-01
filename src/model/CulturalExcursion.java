@@ -123,6 +123,21 @@ public class CulturalExcursion extends TourService {
     }
 
     /**
+     * Muestra por consola la información completa de la excursión
+     * cultural, incluyendo los campos heredados y los específicos
+     * de esta subclase.
+     */
+    @Override
+    public void displayInformation() {
+        super.displayInformation();
+        String place = (historicalPlace != null && !historicalPlace.isBlank()) ? historicalPlace : "datos no encontrados";
+        System.out.println("Lugar histórico: " + place);
+        System.out.println("Precio: $" + String.format("%.0f", price));
+        String guideName = (guide != null) ? guide.getFirstName() + " " + guide.getLastName() : "datos no encontrados";
+        System.out.println("Guía: " + guideName);
+    }
+
+    /**
      * Retorna una representación JSON completa de la excursión cultural,
      * incluyendo los campos heredados y los específicos de esta subclase.
      *
