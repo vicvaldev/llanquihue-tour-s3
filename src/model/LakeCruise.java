@@ -32,12 +32,14 @@ public class LakeCruise extends TourService {
      *                      no puede estar vacío
      * @param price         precio del servicio, debe ser positivo
      * @param guide         guía turístico asignado, no puede ser nulo
+     * @param maxCapacity   capacidad máxima de personas, debe ser positivo
      * @throws IllegalArgumentException si algún parámetro no cumple
      *                                  las restricciones de validación
      */
     public LakeCruise(int id, String name, double durationHours,
-                      String boatType, double price, TouristGuide guide) {
-        super(id, name, durationHours);
+                      String boatType, double price, TouristGuide guide,
+                      int maxCapacity) {
+        super(id, name, durationHours, maxCapacity);
         setBoatType(boatType);
         setPrice(price);
         setGuide(guide);

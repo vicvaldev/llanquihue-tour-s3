@@ -31,12 +31,14 @@ public class GastronomicRoute extends TourService {
      * @param numberOfStops número de paradas gastronómicas, debe ser positivo
      * @param price         precio del servicio, debe ser positivo
      * @param guide         guía turístico asignado, no puede ser nulo
+     * @param maxCapacity   capacidad máxima de personas, debe ser positivo
      * @throws IllegalArgumentException si algún parámetro no cumple
      *                                  las restricciones de validación
      */
     public GastronomicRoute(int id, String name, double durationHours,
-                            int numberOfStops, double price, TouristGuide guide) {
-        super(id, name, durationHours);
+                            int numberOfStops, double price, TouristGuide guide,
+                            int maxCapacity) {
+        super(id, name, durationHours, maxCapacity);
         setNumberOfStops(numberOfStops);
         setPrice(price);
         setGuide(guide);

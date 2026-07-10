@@ -32,12 +32,14 @@ public class CulturalExcursion extends TourService {
      *                        no puede estar vacío
      * @param price           precio del servicio, debe ser positivo
      * @param guide           guía turístico asignado, no puede ser nulo
+     * @param maxCapacity     capacidad máxima de personas, debe ser positivo
      * @throws IllegalArgumentException si algún parámetro no cumple
      *                                  las restricciones de validación
      */
     public CulturalExcursion(int id, String name, double durationHours,
-                             String historicalPlace, double price, TouristGuide guide) {
-        super(id, name, durationHours);
+                             String historicalPlace, double price, TouristGuide guide,
+                             int maxCapacity) {
+        super(id, name, durationHours, maxCapacity);
         setHistoricalPlace(historicalPlace);
         setPrice(price);
         setGuide(guide);

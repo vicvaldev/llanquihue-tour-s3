@@ -5,7 +5,8 @@ package model;
  * turísticos ofrecidos por la agencia Llanquihue Tour.
  * <p>
  * Contiene los atributos comunes a todo servicio: identificador único,
- * nombre comercial y duración expresada en horas. Define métodos abstractos
+ * nombre comercial, duración expresada en horas y capacidad máxima de
+ * personas. Define métodos abstractos
  * que las subclases deben implementar para exponer el precio, el guía
  * asignado y el tipo concreto de servicio, permitiendo operar
  * polimórficamente sobre una colección de {@code TourService} sin
@@ -21,6 +22,7 @@ public abstract class TourService implements Registerable {
     private int id;
     private String name;
     private double durationHours;
+    private int maxCapacity;
 
     /**
      * Constructor por defecto requerido por la infraestructura de
@@ -35,13 +37,15 @@ public abstract class TourService implements Registerable {
      * @param id            identificador único del servicio, debe ser positivo
      * @param name          nombre del servicio, no puede estar vacío
      * @param durationHours duración en horas, debe ser un valor positivo
+     * @param maxCapacity   capacidad máxima de personas, debe ser positivo
      * @throws IllegalArgumentException si alguno de los parámetros no
      *                                  cumple las restricciones de validación
      */
-    public TourService(int id, String name, double durationHours) {
+    public TourService(int id, String name, double durationHours, int maxCapacity) {
         setId(id);
         setName(name);
         setDurationHours(durationHours);
+        setMaxCapacity(maxCapacity);
     }
 
     /**
@@ -140,6 +144,28 @@ public abstract class TourService implements Registerable {
     public abstract String getServiceType();
 
     /**
+     * Retorna la capacidad máxima de personas para este servicio turístico.
+     *
+     * @return capacidad máxima en cantidad de personas
+     */
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    /**
+     * Asigna la capacidad máxima de personas para este servicio turístico.
+     *
+     * @param maxCapacity capacidad máxima, debe ser un valor positivo
+     * @throws IllegalArgumentException si {@code maxCapacity <= 0}
+     */
+    public void setMaxCapacity(int maxCapacity) {
+        if (maxCapacity <= 0) {
+            throw new IllegalArgumentException("La capacidad máxima debe ser un número positivo.");
+        }
+        this.maxCapacity = maxCapacity;
+    }
+
+    /**
      * Muestra un resumen del servicio turístico. Cada subclase concreta
      * implementa este método con los datos específicos de su tipo.
      */
@@ -161,14 +187,16 @@ public abstract class TourService implements Registerable {
 
     /**
      * Retorna una representación JSON del servicio con los campos
-     * comunes: id, nombre y duración en horas. Las subclases extienden
-     * este formato agregando sus atributos específicos y el precio.
+     * comunes: id, nombre, duración en horas y capacidad máxima.
+     * Las subclases extienden este formato agregando sus atributos
+     * específicos y el precio.
      *
      * @return cadena en formato JSON con los datos del servicio
      */
     @Override
     public String toString() {
         return "{ \"id\": " + id + ", \"nombre\": \"" + name
-                + "\", \"duracionHoras\": " + durationHours + " }";
+                + "\", \"duracionHoras\": " + durationHours
+                + ", \"capacidadMaxima\": " + maxCapacity + " }";
     }
 }

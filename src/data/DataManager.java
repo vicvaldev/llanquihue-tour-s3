@@ -14,11 +14,15 @@ import java.util.stream.*;
  * UTF-8, parsea sus registros y construye objetos concretos de la
  * jerarquía {@link TourService} según el valor de la columna "type".
  * <p>
+ * Cada línea debe contener 20 campos separados por punto y coma. El
+ * campo 20 ({@code maxCapacity}) es obligatorio y debe ser un entero
+ * positivo.
+ * <p>
  * Incluye validación de cada línea del CSV: si un registro no cumple
  * las reglas de negocio (tipo desconocido, valores numéricos inválidos,
- * campos vacíos obligatorios, RUT inválido) se omite con un mensaje
- * descriptivo que indica el número de línea y la causa, sin interrumpir
- * la carga del resto del archivo.
+ * campos vacíos obligatorios, RUT inválido, capacidad máxima inválida)
+ * se omite con un mensaje descriptivo que indica el número de línea y
+ * la causa, sin interrumpir la carga del resto del archivo.
  * </p>
  */
 public class DataManager {
@@ -38,10 +42,10 @@ public class DataManager {
 
     /**
      * Lee un archivo de texto con registros separados por {@code ;} y construye
-     * una lista de objetos {@link Registerable}. Cada línea debe contener 19 campos
+     * una lista de objetos {@link Registerable}. Cada línea debe contener 20 campos
      * en el siguiente orden:
      * <pre>
-     * id;type;name;durationHours;numberOfStops;boatType;historicalPlace;price;rut;firstName;lastName;street;number;city;region;position;baseSalary;motherTongue;secondLanguage
+     * id;type;name;durationHours;numberOfStops;boatType;historicalPlace;price;rut;firstName;lastName;street;number;city;region;position;baseSalary;motherTongue;secondLanguage;maxCapacity
      * </pre>
      *
      * @param filePath ruta al archivo de datos
@@ -57,9 +61,9 @@ public class DataManager {
                 lineNumber++;
                 if (line.isBlank()) continue;
                 String[] parts = line.split(DELIMITER, -1);
-                if (parts.length < 19) {
+                if (parts.length < 20) {
                     System.err.println("Línea " + lineNumber + " ignorada: número incorrecto de campos " +
-                            "(" + parts.length + " de 19).");
+                            "(" + parts.length + " de 20).");
                     continue;
                 }
                 try {
@@ -110,12 +114,18 @@ public class DataManager {
                     String position = parts[15].trim();
                     String motherTongue = parts[17].trim();
                     String secondLanguage = parts[18].trim();
+                    int maxCapacity = Integer.parseInt(parts[19].trim());
+                    if (maxCapacity <= 0) {
+                        System.err.println("Línea " + lineNumber + " ignorada: capacidad máxima inválida " +
+                                "('" + parts[19] + "').");
+                        continue;
+                    }
 
                     Address address = new Address(street, number, city, region);
                     TouristGuide guide = new TouristGuide(rut, firstName, lastName,
                             address, position, baseSalary, motherTongue, secondLanguage);
 
-                    TourService service = createService(type, id, name, durationHours, parts, price, guide);
+                    TourService service = createService(type, id, name, durationHours, parts, price, guide, maxCapacity);
                     services.add(service);
 
                 } catch (InvalidRutException e) {
@@ -178,19 +188,20 @@ public class DataManager {
      *                                  reconocido
      */
     private static TourService createService(String type, int id, String name, double durationHours,
-                                              String[] parts, double price, TouristGuide guide) {
+                                              String[] parts, double price, TouristGuide guide,
+                                              int maxCapacity) {
         switch (type) {
             case "GastronomicRoute": {
                 int numberOfStops = Integer.parseInt(parts[4].trim());
-                return new GastronomicRoute(id, name, durationHours, numberOfStops, price, guide);
+                return new GastronomicRoute(id, name, durationHours, numberOfStops, price, guide, maxCapacity);
             }
             case "LakeCruise": {
                 String boatType = parts[5].trim();
-                return new LakeCruise(id, name, durationHours, boatType, price, guide);
+                return new LakeCruise(id, name, durationHours, boatType, price, guide, maxCapacity);
             }
             case "CulturalExcursion": {
                 String historicalPlace = parts[6].trim();
-                return new CulturalExcursion(id, name, durationHours, historicalPlace, price, guide);
+                return new CulturalExcursion(id, name, durationHours, historicalPlace, price, guide, maxCapacity);
             }
             default:
                 throw new IllegalArgumentException("Tipo de servicio no soportado: " + type);
@@ -266,7 +277,8 @@ public class DataManager {
                     valueOf(guide.getPosition()),
                     String.valueOf(guide.getBaseSalary()),
                     valueOf(guide.getMotherTongue()),
-                    valueOf(guide.getSecondLanguage())
+                    valueOf(guide.getSecondLanguage()),
+                    String.valueOf(service.getMaxCapacity())
             );
             bw.write(line);
             bw.newLine();
