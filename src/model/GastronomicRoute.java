@@ -141,6 +141,13 @@ public class GastronomicRoute extends TourService {
      * @return cadena en formato JSON con todos los datos del servicio
      */
     @Override
+    public void showSummary() {
+        System.out.println("Ruta Gastronómica: " + getName()
+                + " | Paradas: " + numberOfStops
+                + " | Precio: $" + String.format("%.0f", price));
+    }
+
+    @Override
     public String toString() {
         return "{ \"id\": " + getId() + ", \"nombre\": \"" + getName()
                 + "\", \"duracionHoras\": " + getDurationHours()

@@ -144,6 +144,13 @@ public class CulturalExcursion extends TourService {
      * @return cadena en formato JSON con todos los datos del servicio
      */
     @Override
+    public void showSummary() {
+        System.out.println("Excursión Cultural: " + getName()
+                + " | Lugar histórico: " + historicalPlace
+                + " | Precio: $" + String.format("%.0f", price));
+    }
+
+    @Override
     public String toString() {
         return "{ \"id\": " + getId() + ", \"nombre\": \"" + getName()
                 + "\", \"duracionHoras\": " + getDurationHours()

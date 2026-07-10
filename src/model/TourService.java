@@ -16,7 +16,7 @@ package model;
  * @see LakeCruise
  * @see CulturalExcursion
  */
-public abstract class TourService {
+public abstract class TourService implements Registerable {
     private int id;
     private String name;
     private double durationHours;
@@ -137,6 +137,9 @@ public abstract class TourService {
      *         o "CulturalExcursion")
      */
     public abstract String getServiceType();
+
+    @Override
+    public abstract void showSummary();
 
     /**
      * Muestra por consola la información completa del servicio

@@ -45,10 +45,10 @@ public class DataManager {
      * </pre>
      *
      * @param filePath ruta al archivo de datos
-     * @return lista de servicios turísticos cargados desde el archivo
+     * @return lista de entidades registrables cargadas desde el archivo
      */
-    public static List<TourService> loadServices(String filePath) {
-        List<TourService> services = new ArrayList<>();
+    public static List<Registerable> loadServices(String filePath) {
+        List<Registerable> services = new ArrayList<>();
         int lineNumber = 0;
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
@@ -322,9 +322,9 @@ public class DataManager {
      * @param maxPrice precio máximo (inclusive)
      * @return lista de servicios con precio ≤ {@code maxPrice}
      */
-    public static List<TourService> filterByPrice(List<TourService> list, double maxPrice) {
+    public static List<Registerable> filterByPrice(List<Registerable> list, double maxPrice) {
         return list.stream()
-                .filter(t -> t.getPrice() <= maxPrice)
+                .filter(r -> r instanceof TourService && ((TourService) r).getPrice() <= maxPrice)
                 .collect(Collectors.toList());
     }
 
@@ -338,10 +338,11 @@ public class DataManager {
      * @return lista de servicios cuyo guía habla {@code motherTongue}
      *         como lengua materna
      */
-    public static List<TourService> filterByMotherTongue(List<TourService> list, String motherTongue) {
+    public static List<Registerable> filterByMotherTongue(List<Registerable> list, String motherTongue) {
         return list.stream()
-                .filter(t -> t.getGuide().getMotherTongue()
-                        .equalsIgnoreCase(motherTongue))
+                .filter(r -> r instanceof TourService
+                        && ((TourService) r).getGuide().getMotherTongue()
+                                .equalsIgnoreCase(motherTongue))
                 .collect(Collectors.toList());
     }
 }

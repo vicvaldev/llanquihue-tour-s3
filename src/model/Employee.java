@@ -68,6 +68,12 @@ public class Employee extends Person {
     }
 
     @Override
+    public void showSummary() {
+        System.out.println("Empleado: " + getFirstName() + " " + getLastName()
+                + " | Cargo: " + position + " | Sueldo: $" + (long) baseSalary);
+    }
+
+    @Override
     public String toString() {
         return "{ \"rut\": \"" + getRut() + "\", \"nombre\": \"" + getFirstName()
                 + "\", \"apellido\": \"" + getLastName() + "\", \"cargo\": \"" + position

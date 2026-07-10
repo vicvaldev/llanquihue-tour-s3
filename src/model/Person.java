@@ -7,7 +7,7 @@ import util.*;
  * Contiene datos básicos como RUT, nombre, apellido y una dirección asociada
  * mediante composición.
  */
-public class Person {
+public class Person implements Registerable {
     private String rut;
     private String firstName;
     private String lastName;
@@ -92,6 +92,11 @@ public class Person {
      */
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    @Override
+    public void showSummary() {
+        System.out.println("Persona: " + firstName + " " + lastName + " (RUT: " + rut + ")");
     }
 
     @Override

@@ -65,6 +65,14 @@ public class TouristGuide extends Employee {
     }
 
     @Override
+    public void showSummary() {
+        System.out.println("Guía Turístico: " + getFirstName() + " " + getLastName()
+                + " | RUT: " + getRut()
+                + " | Lengua materna: " + motherTongue
+                + (secondLanguage.isEmpty() ? "" : " | 2ª lengua: " + secondLanguage));
+    }
+
+    @Override
     public String toString() {
         return "{ \"rut\": \"" + getRut() + "\", \"nombre\": \"" + getFirstName()
                 + " " + getLastName() + "\", \"lenguaMaterna\": \"" + motherTongue

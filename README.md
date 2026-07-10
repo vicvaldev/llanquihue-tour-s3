@@ -9,16 +9,18 @@ src/
 ├── data/
 │   └── DataManager.java               — Carga, guardado y filtros sobre CSV
 ├── model/
+│   ├── Registerable.java              — Interfaz con método showSummary()
 │   ├── Address.java                   — Dirección física (composición)
-│   ├── Person.java                    — Persona genérica (clase base)
+│   ├── Person.java                    — Persona genérica (clase base, implementa Registerable)
 │   ├── Employee.java                  — Empleado de la agencia (hereda de Person)
 │   ├── TouristGuide.java              — Guía turístico (hereda de Employee)
-│   ├── TourService.java               — Servicio turístico (superclase abstracta)
+│   ├── TourService.java               — Servicio turístico (superclase abstracta, implementa Registerable)
 │   ├── GastronomicRoute.java          — Ruta gastronómica (hereda de TourService)
 │   ├── LakeCruise.java                — Paseo lacustre (hereda de TourService)
 │   └── CulturalExcursion.java         — Excursión cultural (hereda de TourService)
 ├── ui/
-│   └── Main.java                      — Punto de entrada (menú interactivo)
+│   ├── Main.java                      — Punto de entrada (lanza la GUI)
+│   └── GestionGUI.java               — Interfaz gráfica con JFrame y JOptionPane
 └── util/
     ├── InvalidRutException.java       — Excepción para RUT inválido
     └── RutValidator.java              — Validador de RUT chileno (módulo 11)
@@ -30,62 +32,56 @@ resources/
 ## Jerarquía de herencia
 
 ```
-Person
-  └── Employee
-        └── TouristGuide
-
-TourService  (abstracta)
-  ├── GastronomicRoute
-  ├── LakeCruise
-  └── CulturalExcursion
+Registerable  (interfaz — showSummary())
+├── Person
+│   └── Employee
+│       └── TouristGuide
+└── TourService  (abstracta)
+    ├── GastronomicRoute
+    ├── LakeCruise
+    └── CulturalExcursion
 ```
 
-Cada subclase implementa `getPrice()`, `getGuide()` y `getServiceType()` como métodos abstractos de `TourService`, y sobrescribe `displayInformation()` para exponer su información específica, lo que permite operar polimórficamente sin usar `instanceof`.
+Cada subclase concreta implementa `showSummary()` con un mensaje personalizado según el tipo de entidad. `TourService` declara además los métodos abstractos `getPrice()`, `getGuide()` y `getServiceType()`, y sus subclases sobrescriben `displayInformation()` para exponer información específica. La colección principal del sistema utiliza `List<Registerable>`, resolviendo el tipo concreto mediante `instanceof` cuando es necesario.
 
 ## Clases implementadas
 
-| Clase | Paquete | Descripción |
+| Clase / Interfaz | Paquete | Descripción |
 |---|---|---|
+| `Registerable` | model | Interfaz que define el contrato `showSummary()` para todas las entidades gestionables del sistema. |
 | `Address` | model | Dirección con calle, número, ciudad y región. Composición en `Person`. |
-| `Person` | model | Clase base con RUT, nombre, apellido y dirección. Valida RUT en constructor y setter. |
-| `Employee` | model | Hereda de `Person`. Incorpora cargo y sueldo base (validado > 0). |
-| `TouristGuide` | model | Hereda de `Employee`. Agrega lengua materna y segunda lengua del guía. |
-| `TourService` | model | Superclase abstracta con `id`, `name` y `durationHours`. Define métodos abstractos `getPrice()`, `getGuide()`, `getServiceType()`. Incluye `displayInformation()` con implementación base. |
-| `GastronomicRoute` | model | Hereda de `TourService`. Agrega `numberOfStops` (validado > 0), `price` (> 0) y `guide` (composición con `TouristGuide`). Sobrescribe `displayInformation()` con datos de paradas, precio y guía. |
-| `LakeCruise` | model | Hereda de `TourService`. Agrega `boatType` (no vacío), `price` (> 0) y `guide` (composición). Sobrescribe `displayInformation()` con datos de embarcación, precio y guía. |
-| `CulturalExcursion` | model | Hereda de `TourService`. Agrega `historicalPlace` (no vacío), `price` (> 0) y `guide` (composición). Sobrescribe `displayInformation()` con datos de lugar histórico, precio y guía. |
-| `DataManager` | data | Utilidad estática que lee `resources/tours.csv`, construye objetos de la jerarquía `TourService` según la columna `type`, filtra por precio o lengua materna del guía, y persiste nuevos servicios. Incluye validación de datos y codificación UTF-8. |
+| `Person` | model | Clase base con RUT, nombre, apellido y dirección. Implementa `Registerable.showSummary()`. |
+| `Employee` | model | Hereda de `Person`. Incorpora cargo y sueldo base (validado > 0). Sobrescribe `showSummary()`. |
+| `TouristGuide` | model | Hereda de `Employee`. Agrega lengua materna y segunda lengua del guía. Sobrescribe `showSummary()`. |
+| `TourService` | model | Superclase abstracta con `id`, `name` y `durationHours`. Implementa `Registerable` declarando `showSummary()` como abstracta. Define métodos abstractos `getPrice()`, `getGuide()`, `getServiceType()`. |
+| `GastronomicRoute` | model | Hereda de `TourService`. Agrega `numberOfStops`, `price` y `guide` (composición). `showSummary()` muestra nombre, paradas y precio. |
+| `LakeCruise` | model | Hereda de `TourService`. Agrega `boatType`, `price` y `guide`. `showSummary()` muestra nombre, embarcación y precio. |
+| `CulturalExcursion` | model | Hereda de `TourService`. Agrega `historicalPlace`, `price` y `guide`. `showSummary()` muestra nombre, lugar histórico y precio. |
+| `DataManager` | data | Utilidad estática que lee `resources/tours.csv`, construye objetos de la jerarquía `TourService` según la columna `type`, filtra por precio o lengua materna del guía, y persiste nuevos servicios. Opera con `List<Registerable>` usando `instanceof TourService` para resolver el tipo concreto en los filtros. |
 | `InvalidRutException` | util | Excepción personalizada para RUT inválido. |
 | `RutValidator` | util | Implementa el algoritmo de validación de RUT chileno (módulo 11). |
-| `Main` | ui | Punto de entrada con menú interactivo: listar, buscar por precio, buscar por lengua materna, agregar nuevo servicio, filtrar por tipo (demostración polimórfica) y salir. |
+| `GestionGUI` | ui | Interfaz gráfica con `JFrame` que ofrece botones para mostrar resumen (vía `Registerable.showSummary()`), listar todos los registros, filtrar por precio, filtrar por lengua materna, agregar un nuevo servicio (con `JDialog` de formulario) y salir. |
+| `Main` | ui | Punto de entrada. Crea y muestra la ventana `GestionGUI`. |
 
-## Menú interactivo
+## Interfaz gráfica (GUI)
 
-```
-=== LLANQUIHUE TOUR ===
-1. Listar todos los servicios
-2. Buscar por precio máximo
-3. Buscar por lengua materna del guía
-4. Agregar un nuevo servicio
-5. Ver último servicio agregado
-6. Salir
-```
+La aplicación cuenta con una interfaz gráfica basada en `JFrame` con un panel de botones y un área de texto de salida.
 
-### Opciones
+### Botones
 
-1. **Listar todos los servicios** — Muestra todos los servicios registrados usando `toString()` polimórfico de cada subclase.
-2. **Buscar por precio máximo** — Solicita un valor y muestra los servicios con precio menor o igual al indicado.
-3. **Buscar por lengua materna del guía** — Solicita un código ISO de idioma y muestra los servicios cuyo guía tenga esa lengua materna.
-4. **Agregar un nuevo servicio** — Permite elegir el tipo (Ruta Gastronómica, Paseo Lacustre o Excursión Cultural) y completar campos comunes y específicos. Todos los valores numéricos deben ser positivos. El RUT se valida con el algoritmo módulo 11.
-5. **Ver último servicio agregado** — Muestra el último registro del archivo CSV.
-6. **Salir** — Termina la ejecución.
-7. **Filtrar servicios por tipo** — Demostración de polimorfismo: recorre la colección con un `for-each` usando referencias `TourService`, filtra mediante `getServiceType()` (abstracto → resuelto en cada subclase) y despliega con `displayInformation()` (sobrescrito en cada subclase). Sin `instanceof`. Campos nulos o vacíos muestran "datos no encontrados".
+| Botón | Acción |
+|---|---|
+| **Mostrar Resumen** | Recorre la lista como `Registerable` e invoca `showSummary()` en cada entidad, demostrando el uso de la interfaz. |
+| **Listar Todos** | Muestra todos los registros cargados desde `tours.csv` separados por `---`. Usa `instanceof TourService` para acceder a `toString()`. |
+| **Filtrar por Precio** | Abre un `JOptionPane` para ingresar un precio máximo; aplica `DataManager.filterByPrice()` y muestra los resultados. |
+| **Filtrar por Lengua Materna** | Abre un `JOptionPane` para ingresar un código ISO de idioma; aplica `DataManager.filterByMotherTongue()` y muestra los resultados. |
+| **Agregar Registro** | Abre un `JDialog` modal con todos los campos del servicio y guía, combo Box para tipo e idiomas, y botón Guardar. Al guardar persiste vía `DataManager.appendService()`. |
+| **Salir** | Cierra la aplicación. |
 
 ### Validaciones incluidas
 
-- **Entrada de usuario**: duración, precio, número de paradas y sueldo base deben ser valores positivos.
-- **Modelo**: los setters y constructores lanzan `IllegalArgumentException` si los valores violan las reglas de negocio.
-- **CSV**: cada línea se valida individualmente; las líneas con errores se reportan con el número de línea y la causa específica, sin detener la carga del resto.
+- Los filtros trabajan sobre `List<Registerable>` y resuelven el tipo concreto con `instanceof TourService`.
+- El diálogo de agregar valida campos obligatorios, formato numérico y RUT (módulo 11).
 
 ## Formato del archivo de datos
 
@@ -100,7 +96,7 @@ Los campos específicos de cada tipo (`numberOfStops`, `boatType`, `historicalPl
 ### Datos de ejemplo (6 registros, 2 por subclase)
 
 | # | Tipo | Nombre | Precio |
-|---|---|---|---|
+|---|---|---|
 | 1 | GastronomicRoute | Ruta de los Quesos Artesanales | $45.000 |
 | 2 | GastronomicRoute | Ruta de la Cerveza Artesanal | $35.000 |
 | 3 | LakeCruise | Navegación Lago Todos los Santos | $65.000 |
