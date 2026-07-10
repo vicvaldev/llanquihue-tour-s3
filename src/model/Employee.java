@@ -67,6 +67,10 @@ public class Employee extends Person {
         this.baseSalary = baseSalary;
     }
 
+    /**
+     * Muestra un resumen del empleado incluyendo nombre, cargo y sueldo base.
+     * Sobrescribe la implementación de {@link Person}.
+     */
     @Override
     public void showSummary() {
         System.out.println("Empleado: " + getFirstName() + " " + getLastName()

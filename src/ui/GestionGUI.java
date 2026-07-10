@@ -10,6 +10,16 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 
+/**
+ * Interfaz gráfica principal del sistema Llanquihue Tour.
+ * Proporciona botones para mostrar resumen (vía {@link Registerable#showSummary()}),
+ * listar todos los registros, filtrar por precio o lengua materna del guía,
+ * agregar un nuevo servicio turístico (con {@link JDialog} de formulario) y salir.
+ * <p>
+ * Los datos se cargan desde el archivo {@code resources/tours.csv} a través de
+ * {@link data.DataManager}.
+ * </p>
+ */
 public class GestionGUI extends JFrame {
 
     private static final String DATA_FILE = "resources/tours.csv";
@@ -30,6 +40,10 @@ public class GestionGUI extends JFrame {
 
     private JTextArea outputArea;
 
+    /**
+     * Construye la ventana principal con los botones de acción y el área
+     * de texto de salida. Configura el título, tamaño y posición.
+     */
     public GestionGUI() {
         setTitle("Llanquihue Tour");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,6 +85,12 @@ public class GestionGUI extends JFrame {
         btnExit.addActionListener(e -> System.exit(0));
     }
 
+    /**
+     * Carga la lista de entidades registrables desde el archivo CSV.
+     * Si la lista está vacía, muestra un mensaje en el área de texto.
+     *
+     * @return lista de entidades cargadas (nunca {@code null})
+     */
     private List<Registerable> loadServices() {
         List<Registerable> services = DataManager.loadServices(DATA_FILE);
         if (services.isEmpty()) {
@@ -79,6 +99,11 @@ public class GestionGUI extends JFrame {
         return services;
     }
 
+    /**
+     * Invoca {@link Registerable#showSummary()} en cada entidad cargada,
+     * demostrando el uso polimórfico de la interfaz {@link Registerable}.
+     * Captura la salida de consola y la muestra en el área de texto.
+     */
     private void showSummary() {
         List<Registerable> services = loadServices();
         if (services.isEmpty()) return;
@@ -95,6 +120,11 @@ public class GestionGUI extends JFrame {
         outputArea.setText(baos.toString());
     }
 
+    /**
+     * Muestra todos los registros cargados separados por {@code ---}.
+     * Usa {@code instanceof TourService} para acceder a la representación
+     * específica de cada servicio.
+     */
     private void listAll() {
         List<Registerable> services = loadServices();
         if (services.isEmpty()) return;
@@ -114,6 +144,11 @@ public class GestionGUI extends JFrame {
         outputArea.setText(sb.toString());
     }
 
+    /**
+     * Solicita un precio máximo mediante {@link JOptionPane} y filtra
+     * las entradas usando {@link DataManager#filterByPrice}. Muestra
+     * los resultados en el área de texto.
+     */
     private void filterByPrice() {
         List<Registerable> services = loadServices();
         if (services.isEmpty()) return;
@@ -146,6 +181,11 @@ public class GestionGUI extends JFrame {
         }
     }
 
+    /**
+     * Solicita un código ISO de idioma mediante {@link JOptionPane} y
+     * filtra las entradas usando {@link DataManager#filterByMotherTongue}.
+     * Muestra los resultados en el área de texto.
+     */
     private void filterByMotherTongue() {
         List<Registerable> services = loadServices();
         if (services.isEmpty()) return;
@@ -180,6 +220,11 @@ public class GestionGUI extends JFrame {
         }
     }
 
+    /**
+     * Abre un diálogo modal para agregar un nuevo servicio turístico.
+     * Si el servicio se guarda correctamente, actualiza el área de texto
+     * con un mensaje de confirmación.
+     */
     private void showAddDialog() {
         AddServiceDialog dialog = new AddServiceDialog(this);
         dialog.setVisible(true);
@@ -188,6 +233,12 @@ public class GestionGUI extends JFrame {
         }
     }
 
+    /**
+     * Diálogo modal para el ingreso de un nuevo servicio turístico.
+     * Contiene todos los campos necesarios: tipo de servicio, datos
+     * comunes, campo específico según el tipo, y datos completos del
+     * guía turístico incluyendo dirección validación de RUT.
+     */
     private static class AddServiceDialog extends JDialog {
         private boolean saved = false;
         private JComboBox<String> typeCombo;
@@ -208,6 +259,11 @@ public class GestionGUI extends JFrame {
         private JComboBox<String> secondLanguageCombo;
         private JLabel specificLabel;
 
+        /**
+         * Construye el diálogo de ingreso.
+         *
+         * @param parent ventana padre sobre la cual se centrará el diálogo
+         */
         AddServiceDialog(JFrame parent) {
             super(parent, "Agregar Nuevo Servicio", true);
             setSize(480, 620);
@@ -338,6 +394,12 @@ public class GestionGUI extends JFrame {
             }
         }
 
+        /**
+         * Valida los campos ingresados, construye el objeto {@link TourService}
+         * correspondiente y lo persiste al archivo CSV mediante
+         * {@link DataManager#appendService}. En caso de error muestra un
+         * mensaje descriptivo al usuario.
+         */
         private void save() {
             try {
                 String type = (String) typeCombo.getSelectedItem();
@@ -408,6 +470,13 @@ public class GestionGUI extends JFrame {
             }
         }
 
+        /**
+         * Indica si el servicio fue guardado exitosamente durante la
+         * interacción con este diálogo.
+         *
+         * @return {@code true} si se persistió el servicio, {@code false}
+         *         en caso contrario
+         */
         boolean isSaved() {
             return saved;
         }

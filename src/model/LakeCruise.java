@@ -143,6 +143,10 @@ public class LakeCruise extends TourService {
      *
      * @return cadena en formato JSON con todos los datos del servicio
      */
+    /**
+     * Muestra un resumen del paseo lacustre incluyendo nombre,
+     * tipo de embarcación y precio.
+     */
     @Override
     public void showSummary() {
         System.out.println("Paseo Lacustre: " + getName()

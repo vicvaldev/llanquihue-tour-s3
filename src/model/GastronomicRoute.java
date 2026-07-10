@@ -140,6 +140,10 @@ public class GastronomicRoute extends TourService {
      *
      * @return cadena en formato JSON con todos los datos del servicio
      */
+    /**
+     * Muestra un resumen de la ruta gastronómica incluyendo nombre,
+     * número de paradas y precio.
+     */
     @Override
     public void showSummary() {
         System.out.println("Ruta Gastronómica: " + getName()

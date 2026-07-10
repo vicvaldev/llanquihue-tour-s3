@@ -64,6 +64,11 @@ public class TouristGuide extends Employee {
         this.secondLanguage = secondLanguage;
     }
 
+    /**
+     * Muestra un resumen del guía turístico incluyendo nombre, RUT,
+     * lengua materna y segunda lengua si está registrada.
+     * Sobrescribe la implementación de {@link Employee}.
+     */
     @Override
     public void showSummary() {
         System.out.println("Guía Turístico: " + getFirstName() + " " + getLastName()

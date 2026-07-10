@@ -38,7 +38,7 @@ public class DataManager {
 
     /**
      * Lee un archivo de texto con registros separados por {@code ;} y construye
-     * una lista de objetos {@link TourService}. Cada línea debe contener 19 campos
+     * una lista de objetos {@link Registerable}. Cada línea debe contener 19 campos
      * en el siguiente orden:
      * <pre>
      * id;type;name;durationHours;numberOfStops;boatType;historicalPlace;price;rut;firstName;lastName;street;number;city;region;position;baseSalary;motherTongue;secondLanguage
@@ -315,12 +315,14 @@ public class DataManager {
     }
 
     /**
-     * Filtra una lista de servicios turísticos cuyo precio sea menor
-     * o igual al valor indicado.
+     * Filtra una lista de entidades registrables cuyo precio sea menor
+     * o igual al valor indicado. Solo considera elementos que sean
+     * instancias de {@link TourService}, usando {@code instanceof}
+     * para resolver el tipo concreto.
      *
-     * @param list     lista de servicios a filtrar
+     * @param list     lista de entidades a filtrar
      * @param maxPrice precio máximo (inclusive)
-     * @return lista de servicios con precio ≤ {@code maxPrice}
+     * @return lista de entidades con precio ≤ {@code maxPrice}
      */
     public static List<Registerable> filterByPrice(List<Registerable> list, double maxPrice) {
         return list.stream()
@@ -329,13 +331,15 @@ public class DataManager {
     }
 
     /**
-     * Filtra una lista de servicios turísticos cuyo guía tenga la
-     * lengua materna indicada. La comparación no distingue entre
-     * mayúsculas y minúsculas.
+     * Filtra una lista de entidades registrables cuyo guía tenga la
+     * lengua materna indicada. Solo considera elementos que sean
+     * instancias de {@link TourService}, usando {@code instanceof}
+     * para resolver el tipo concreto. La comparación no distingue
+     * entre mayúsculas y minúsculas.
      *
-     * @param list         lista de servicios a filtrar
+     * @param list         lista de entidades a filtrar
      * @param motherTongue código ISO de la lengua materna a buscar
-     * @return lista de servicios cuyo guía habla {@code motherTongue}
+     * @return lista de entidades cuyo guía habla {@code motherTongue}
      *         como lengua materna
      */
     public static List<Registerable> filterByMotherTongue(List<Registerable> list, String motherTongue) {

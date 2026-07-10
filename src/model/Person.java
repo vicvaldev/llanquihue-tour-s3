@@ -94,6 +94,10 @@ public class Person implements Registerable {
         this.address = address;
     }
 
+    /**
+     * Muestra un resumen de la persona incluyendo nombre completo y RUT.
+     * Implementación del contrato definido en {@link Registerable}.
+     */
     @Override
     public void showSummary() {
         System.out.println("Persona: " + firstName + " " + lastName + " (RUT: " + rut + ")");

@@ -15,6 +15,7 @@ package model;
  * @see GastronomicRoute
  * @see LakeCruise
  * @see CulturalExcursion
+ * @see Registerable
  */
 public abstract class TourService implements Registerable {
     private int id;
@@ -138,6 +139,10 @@ public abstract class TourService implements Registerable {
      */
     public abstract String getServiceType();
 
+    /**
+     * Muestra un resumen del servicio turístico. Cada subclase concreta
+     * implementa este método con los datos específicos de su tipo.
+     */
     @Override
     public abstract void showSummary();
 
