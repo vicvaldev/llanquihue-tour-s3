@@ -95,23 +95,4 @@ public class OrderDataManager {
         }
     }
 
-    /**
-     * Sobrescribe completamente el archivo CSV con todas las órdenes
-     * de la lista proporcionada.
-     *
-     * @param filePath ruta al archivo de órdenes
-     * @param orders   lista de órdenes a persistir, no puede ser nula
-     */
-    public static void saveOrders(String filePath, List<IOrder> orders) {
-        try (BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
-            for (IOrder order : orders) {
-                bw.write(order.toCsvLine());
-                bw.newLine();
-            }
-            bw.flush();
-        } catch (IOException e) {
-            System.err.println("Error al escribir en " + filePath + ": " + e.getMessage());
-        }
-    }
 }

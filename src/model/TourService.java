@@ -25,13 +25,6 @@ public abstract class TourService implements Registerable {
     private int maxCapacity;
 
     /**
-     * Constructor por defecto requerido por la infraestructura de
-     * deserialización. Los atributos deben asignarse posteriormente
-     * mediante los métodos setter correspondientes.
-     */
-    public TourService() {}
-
-    /**
      * Constructor con todos los atributos comunes del servicio turístico.
      *
      * @param id            identificador único del servicio, debe ser positivo
@@ -171,19 +164,6 @@ public abstract class TourService implements Registerable {
      */
     @Override
     public abstract void showSummary();
-
-    /**
-     * Muestra por consola la información completa del servicio
-     * turístico. Las subclases deben sobrescribir este método
-     * agregando los datos específicos de cada tipo mediante una
-     * llamada a {@code super.displayInformation()}.
-     */
-    public void displayInformation() {
-        System.out.println("Nombre: " + name);
-        System.out.println("ID: " + id);
-        System.out.println("Duración: " + durationHours + " horas");
-        System.out.println("Tipo: " + getServiceType());
-    }
 
     /**
      * Retorna una representación JSON del servicio con los campos

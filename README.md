@@ -49,15 +49,15 @@ Registerable  (interfaz — showSummary())
     └── CulturalExcursion
 ```
 
-Cada subclase concreta implementa `showSummary()` con un mensaje personalizado según el tipo de entidad. `TourService` declara además los métodos abstractos `getPrice()`, `getGuide()` y `getServiceType()`, y sus subclases sobrescriben `displayInformation()` para exponer información específica. La colección principal del sistema utiliza `List<Registerable>`, resolviendo el tipo concreto mediante `instanceof` cuando es necesario.
+Cada subclase concreta implementa `showSummary()` con un mensaje personalizado según el tipo de entidad. `TourService` declara además los métodos abstractos `getPrice()`, `getGuide()` y `getServiceType()`. La colección principal del sistema utiliza `List<Registerable>`, resolviendo el tipo concreto mediante `instanceof` cuando es necesario.
 
 ## Clases implementadas
 
 | Clase / Interfaz | Paquete | Descripción |
 |---|---|---|
 | `Registerable` | model | Interfaz que define el contrato `showSummary()` para todas las entidades gestionables del sistema. |
-| `IOrder` | model | Interfaz que define el contrato para órdenes de compra: `getOrderId()`, `getCustomerName()`, `getTour()`, `getPeopleCount()`, `getTotal()`, `showSummary()` y `toCsvLine()`. |
-| `Address` | model | Dirección con calle, número, ciudad y región. Composición en `Person`. |
+| `IOrder` | model | Interfaz que define el contrato para órdenes de compra: `toCsvLine()`. |
+| `Address` | model | Dirección con calle, número, ciudad y región. Composición en `Person`. Solo lectura (getters). |
 | `Person` | model | Clase base con RUT, nombre, apellido y dirección. Implementa `Registerable.showSummary()`. |
 | `Employee` | model | Hereda de `Person`. Incorpora cargo y sueldo base (validado > 0). Sobrescribe `showSummary()`. |
 | `TouristGuide` | model | Hereda de `Employee`. Agrega lengua materna y segunda lengua del guía. Sobrescribe `showSummary()`. |
@@ -67,7 +67,7 @@ Cada subclase concreta implementa `showSummary()` con un mensaje personalizado s
 | `CulturalExcursion` | model | Hereda de `TourService`. Agrega `historicalPlace`, `price` y `guide`. `showSummary()` muestra nombre, lugar histórico y precio. |
 | `PurchaseOrder` | model | Orden de compra con `customerName`, `tour`, `peopleCount` y `total` calculado. Implementa `IOrder`. Valida capacidad máxima lanzando `ExceededCapacityException`. |
 | `DataManager` | data | Utilidad estática que lee `resources/tours.csv` (20 campos), construye objetos de la jerarquía `TourService` según la columna `type`, filtra por precio o lengua materna del guía, y persiste nuevos servicios. Opera con `List<Registerable>` usando `instanceof TourService` para resolver el tipo concreto en los filtros. |
-| `OrderDataManager` | data | Utilidad estática que lee, agrega y guarda órdenes de compra en `resources/orders.csv` (8 campos). Trabaja con la interfaz `IOrder`. |
+| `OrderDataManager` | data | Utilidad estática que lee y agrega órdenes de compra en `resources/orders.csv` (8 campos). Trabaja con la interfaz `IOrder`. |
 | `ExceededCapacityException` | util | Excepción controlada que se lanza al superar la capacidad máxima de un tour en una orden de compra. |
 | `InvalidRutException` | util | Excepción personalizada para RUT inválido. |
 | `RutValidator` | util | Implementa el algoritmo de validación de RUT chileno (módulo 11). |

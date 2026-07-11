@@ -18,13 +18,6 @@ public class LakeCruise extends TourService {
     private TouristGuide guide;
 
     /**
-     * Constructor por defecto requerido por la infraestructura de
-     * deserialización. Los atributos deben asignarse posteriormente
-     * mediante los métodos setter correspondientes.
-     */
-    public LakeCruise() {}
-
-    /**
      * Constructor con todos los atributos del paseo lacustre.
      *
      * @param id            identificador único del servicio
@@ -127,26 +120,6 @@ public class LakeCruise extends TourService {
         return "LakeCruise";
     }
 
-    /**
-     * Muestra por consola la información completa del paseo lacustre,
-     * incluyendo los campos heredados y los específicos de esta subclase.
-     */
-    @Override
-    public void displayInformation() {
-        super.displayInformation();
-        String boat = (boatType != null && !boatType.isBlank()) ? boatType : "datos no encontrados";
-        System.out.println("Tipo de embarcación: " + boat);
-        System.out.println("Precio: $" + FormatUtils.formatPrice(price));
-        String guideName = (guide != null) ? guide.getFirstName() + " " + guide.getLastName() : "datos no encontrados";
-        System.out.println("Guía: " + guideName);
-    }
-
-    /**
-     * Retorna una representación JSON completa del paseo lacustre,
-     * incluyendo los campos heredados y los específicos de esta subclase.
-     *
-     * @return cadena en formato JSON con todos los datos del servicio
-     */
     /**
      * Muestra un resumen del paseo lacustre incluyendo nombre,
      * tipo de embarcación y precio.

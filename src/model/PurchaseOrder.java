@@ -63,51 +63,11 @@ public class PurchaseOrder implements IOrder {
     }
 
     /**
-     * Retorna el nombre del cliente que realizó la orden.
-     *
-     * @return nombre del cliente
-     */
-    @Override
-    public String getCustomerName() { return customerName; }
-
-    /**
-     * Retorna el servicio turístico asociado a esta orden.
-     *
-     * @return servicio turístico contratado
-     */
-    @Override
-    public TourService getTour() { return tour; }
-
-    /**
-     * Retorna la cantidad de personas incluidas en la orden.
-     *
-     * @return cantidad de personas
-     */
-    @Override
-    public int getPeopleCount() { return peopleCount; }
-
-    /**
-     * Retorna el total de la orden calculado como
-     * {@code precio unitario × cantidad de personas}.
-     *
-     * @return total de la orden
-     */
-    @Override
-    public double getTotal() { return total; }
-
-    /**
-     * Retorna el identificador único de la orden.
-     *
-     * @return número de orden
-     */
-    @Override
-    public int getOrderId() { return orderId; }
-
-    /**
      * Crea una instancia de {@code PurchaseOrder} a partir de datos
-     * serializados en CSV, sin alterar el contador de ID ni recalcular
-     * el total. Este método se utiliza exclusivamente para la
-     * deserialización de órdenes previamente persistidas.
+     * serializados en CSV, sincronizando el contador estático de ID para
+     * que nuevas órdenes no colisionen con las ya persistidas.
+     * Este método se utiliza exclusivamente para la deserialización
+     * de órdenes previamente persistidas.
      *
      * @param orderId      número de orden almacenado
      * @param customerName nombre del cliente
@@ -124,22 +84,10 @@ public class PurchaseOrder implements IOrder {
         po.tour = tour;
         po.peopleCount = peopleCount;
         po.total = total;
+        if (orderId >= nextOrderId) {
+            nextOrderId = orderId + 1;
+        }
         return po;
-    }
-
-    /**
-     * Muestra por consola un resumen completo de la orden de compra,
-     * incluyendo el número de orden, nombre del cliente, datos del
-     * tour, capacidad, precio unitario y total.
-     */
-    @Override
-    public void showSummary() {
-        System.out.println("=== Orden de Compra #" + orderId + " ===");
-        System.out.println("Cliente: " + customerName);
-        System.out.println("Tour: " + tour.getName() + " (" + tour.getServiceType() + ")");
-        System.out.println("Personas: " + peopleCount + " / Capacidad máxima: " + tour.getMaxCapacity());
-        System.out.println("Precio unitario: $" + FormatUtils.formatPrice(tour.getPrice()));
-        System.out.println("Total: $" + FormatUtils.formatPrice(total));
     }
 
     /**

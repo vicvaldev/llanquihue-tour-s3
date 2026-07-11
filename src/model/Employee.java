@@ -11,11 +11,6 @@ public class Employee extends Person {
     private double baseSalary;
 
     /**
-     * Constructor por defecto.
-     */
-    public Employee() {}
-
-    /**
      * Constructor con todos los atributos, incluyendo los heredados de Persona.
      *
      * @param rut        RUT del empleado
@@ -38,13 +33,6 @@ public class Employee extends Person {
      */
     public String getPosition() {
         return position;
-    }
-
-    /**
-     * @param position cargo o puesto de trabajo
-     */
-    public void setPosition(String position) {
-        this.position = position;
     }
 
     /**

@@ -18,13 +18,6 @@ public class GastronomicRoute extends TourService {
     private TouristGuide guide;
 
     /**
-     * Constructor por defecto requerido por la infraestructura de
-     * deserialización. Los atributos deben asignarse posteriormente
-     * mediante los métodos setter correspondientes.
-     */
-    public GastronomicRoute() {}
-
-    /**
      * Constructor con todos los atributos de la ruta gastronómica.
      *
      * @param id            identificador único del servicio
@@ -124,26 +117,6 @@ public class GastronomicRoute extends TourService {
         return "GastronomicRoute";
     }
 
-    /**
-     * Muestra por consola la información completa de la ruta
-     * gastronómica, incluyendo los campos heredados y los específicos
-     * de esta subclase.
-     */
-    @Override
-    public void displayInformation() {
-        super.displayInformation();
-        System.out.println("Número de paradas: " + numberOfStops);
-        System.out.println("Precio: $" + FormatUtils.formatPrice(price));
-        String guideName = (guide != null) ? guide.getFirstName() + " " + guide.getLastName() : "datos no encontrados";
-        System.out.println("Guía: " + guideName);
-    }
-
-    /**
-     * Retorna una representación JSON completa de la ruta gastronómica,
-     * incluyendo los campos heredados y los específicos de esta subclase.
-     *
-     * @return cadena en formato JSON con todos los datos del servicio
-     */
     /**
      * Muestra un resumen de la ruta gastronómica incluyendo nombre,
      * número de paradas y precio.

@@ -11,11 +11,6 @@ public class Address {
     private String region;
 
     /**
-     * Constructor por defecto.
-     */
-    public Address() {}
-
-    /**
      * Constructor con todos los atributos.
      *
      * @param street  nombre de la calle
@@ -38,24 +33,10 @@ public class Address {
     }
 
     /**
-     * @param street nombre de la calle
-     */
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    /**
      * @return número de la vivienda o local
      */
     public String getNumber() {
         return number;
-    }
-
-    /**
-     * @param number número de la vivienda o local
-     */
-    public void setNumber(String number) {
-        this.number = number;
     }
 
     /**
@@ -66,24 +47,10 @@ public class Address {
     }
 
     /**
-     * @param city ciudad de residencia
-     */
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    /**
      * @return región geográfica
      */
     public String getRegion() {
         return region;
-    }
-
-    /**
-     * @param region región geográfica
-     */
-    public void setRegion(String region) {
-        this.region = region;
     }
 
     @Override

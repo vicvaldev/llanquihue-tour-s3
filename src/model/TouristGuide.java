@@ -11,11 +11,6 @@ public class TouristGuide extends Employee {
     private String secondLanguage;
 
     /**
-     * Constructor por defecto.
-     */
-    public TouristGuide() {}
-
-    /**
      * Constructor con todos los atributos, incluyendo los heredados de Employee y Person.
      *
      * @param rut             RUT del guía
@@ -44,24 +39,10 @@ public class TouristGuide extends Employee {
     }
 
     /**
-     * @param motherTongue lengua materna del guía
-     */
-    public void setMotherTongue(String motherTongue) {
-        this.motherTongue = motherTongue;
-    }
-
-    /**
      * @return segunda lengua que domina el guía
      */
     public String getSecondLanguage() {
         return secondLanguage;
-    }
-
-    /**
-     * @param secondLanguage segunda lengua que domina el guía
-     */
-    public void setSecondLanguage(String secondLanguage) {
-        this.secondLanguage = secondLanguage;
     }
 
     /**
