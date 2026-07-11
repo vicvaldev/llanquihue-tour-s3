@@ -23,6 +23,8 @@ public class PurchaseOrder {
     private static int nextOrderId = 1;
     private int orderId;
 
+    private PurchaseOrder() {}
+
     /**
      * Construye una orden de compra validando que la cantidad de personas
      * no supere la capacidad máxima del tour.
@@ -97,6 +99,30 @@ public class PurchaseOrder {
     public int getOrderId() { return orderId; }
 
     /**
+     * Crea una instancia de {@code PurchaseOrder} a partir de datos
+     * serializados en CSV, sin alterar el contador de ID ni recalcular
+     * el total. Este método se utiliza exclusivamente para la
+     * deserialización de órdenes previamente persistidas.
+     *
+     * @param orderId      número de orden almacenado
+     * @param customerName nombre del cliente
+     * @param tour         servicio turístico asociado
+     * @param peopleCount  cantidad de personas
+     * @param total        total almacenado de la orden
+     * @return instancia reconstruida desde CSV
+     */
+    public static PurchaseOrder fromCsv(int orderId, String customerName,
+                                         TourService tour, int peopleCount, double total) {
+        PurchaseOrder po = new PurchaseOrder();
+        po.orderId = orderId;
+        po.customerName = customerName;
+        po.tour = tour;
+        po.peopleCount = peopleCount;
+        po.total = total;
+        return po;
+    }
+
+    /**
      * Muestra por consola un resumen completo de la orden de compra,
      * incluyendo el número de orden, nombre del cliente, datos del
      * tour, capacidad, precio unitario y total.
@@ -111,21 +137,18 @@ public class PurchaseOrder {
     }
 
     /**
-     * Retorna una representación JSON de la orden de compra con todos
-     * sus campos: número de orden, cliente, tour, cantidad de personas
-     * y total.
+     * Retorna una representación legible de la orden de compra en una
+     * sola línea con el formato:
+     * {@code Orden #X | Cliente: X | Tour: X (X) | Personas: X | Total: $X}.
      *
-     * @return cadena en formato JSON con los datos de la orden
+     * @return cadena con el resumen de la orden
      */
     @Override
     public String toString() {
-        return "{ \"orderId\": " + orderId
-                + ", \"cliente\": \"" + customerName
-                + "\", \"tourId\": " + tour.getId()
-                + ", \"tipoTour\": \"" + tour.getServiceType()
-                + "\", \"nombreTour\": \"" + tour.getName()
-                + "\", \"personas\": " + peopleCount
-                + ", \"total\": " + total + " }";
+        return "Orden #" + orderId + " | Cliente: " + customerName
+                + " | Tour: " + tour.getName() + " (" + tour.getServiceType() + ")"
+                + " | Personas: " + peopleCount
+                + " | Total: $" + FormatUtils.formatPrice(total);
     }
 
     /**

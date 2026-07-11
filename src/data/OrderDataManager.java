@@ -1,7 +1,8 @@
 package data;
 
 import model.PurchaseOrder;
-import util.FormatUtils;
+import model.Registerable;
+import model.TourService;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -26,40 +27,53 @@ public class OrderDataManager {
     private OrderDataManager() {}
 
     /**
-     * Lee un archivo de órdenes de compra y retorna una lista con las
-     * líneas formateadas para mostrar en la interfaz gráfica.
-     * Cada línea incluye: número de orden, nombre del cliente, tour,
-     * cantidad de personas, precio unitario y total.
+     * Lee un archivo de órdenes de compra y retorna una lista de objetos
+     * {@link PurchaseOrder} reconstruidos a partir del CSV. Para cada
+     * línea busca el {@link TourService} correspondiente por ID dentro
+     * de la lista de servicios proporcionada.
      * <p>
      * Si el archivo no existe, retorna una lista vacía sin errores.
+     * Las líneas con tourId sin coincidencia en servicios se omiten.
      * </p>
      *
      * @param filePath ruta al archivo de órdenes
-     * @return lista de cadenas formateadas para mostrar en GUI
+     * @param services lista de servicios turísticos disponibles para
+     *                 resolver el tourId de cada orden
+     * @return lista de objetos PurchaseOrder reconstruidos
      */
-    public static List<String> loadOrderLines(String filePath) {
-        List<String> lines = new ArrayList<>();
+    public static List<PurchaseOrder> loadOrders(String filePath, List<Registerable> services) {
+        Map<Integer, TourService> serviceMap = new HashMap<>();
+        for (Registerable reg : services) {
+            if (reg instanceof TourService ts) {
+                serviceMap.put(ts.getId(), ts);
+            }
+        }
+
+        List<PurchaseOrder> orders = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.isBlank()) continue;
                 String[] parts = line.split(DELIMITER, -1);
-                if (parts.length < 8) {
-                    continue;
-                }
-                double unitPrice = Double.parseDouble(parts[6]);
-                double total = Double.parseDouble(parts[7]);
-                String orderLine = String.format("Orden #%s | Cliente: %s | Tour: %s (%s) | Personas: %s | Precio Unit.: $%s | Total: $%s",
-                        parts[0], parts[1], parts[4], parts[3], parts[5],
-                        FormatUtils.formatPrice(unitPrice), FormatUtils.formatPrice(total));
-                lines.add(orderLine);
+                if (parts.length < 8) continue;
+
+                int orderId = Integer.parseInt(parts[0].trim());
+                String customerName = parts[1].trim();
+                int tourId = Integer.parseInt(parts[2].trim());
+                int peopleCount = Integer.parseInt(parts[5].trim());
+                double total = Double.parseDouble(parts[7].trim());
+
+                TourService tour = serviceMap.get(tourId);
+                if (tour == null) continue;
+
+                orders.add(PurchaseOrder.fromCsv(orderId, customerName, tour, peopleCount, total));
             }
         } catch (FileNotFoundException ignored) {
-        } catch (IOException e) {
-            lines.add("Error al leer órdenes: " + e.getMessage());
+        } catch (IOException | NumberFormatException e) {
+            System.err.println("Error al leer órdenes: " + e.getMessage());
         }
-        return lines;
+        return orders;
     }
 
     /**
