@@ -1,5 +1,7 @@
 package model;
 
+import util.FormatUtils;
+
 /**
  * Representa una excursión cultural a un lugar de interés histórico
  * de la Región de Los Lagos, como iglesias patrimoniales, fuertes
@@ -134,7 +136,7 @@ public class CulturalExcursion extends TourService {
         super.displayInformation();
         String place = (historicalPlace != null && !historicalPlace.isBlank()) ? historicalPlace : "datos no encontrados";
         System.out.println("Lugar histórico: " + place);
-        System.out.println("Precio: $" + String.format("%.0f", price));
+        System.out.println("Precio: $" + FormatUtils.formatPrice(price));
         String guideName = (guide != null) ? guide.getFirstName() + " " + guide.getLastName() : "datos no encontrados";
         System.out.println("Guía: " + guideName);
     }
@@ -153,7 +155,7 @@ public class CulturalExcursion extends TourService {
     public void showSummary() {
         System.out.println("Excursión Cultural: " + getName()
                 + " | Lugar histórico: " + historicalPlace
-                + " | Precio: $" + String.format("%.0f", price));
+                + " | Precio: $" + FormatUtils.formatPrice(price));
     }
 
     @Override

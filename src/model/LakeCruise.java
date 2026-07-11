@@ -1,5 +1,7 @@
 package model;
 
+import util.FormatUtils;
+
 /**
  * Representa un paseo lacustre o navegación por los lagos, canales y
  * fiordos de la Región de Los Lagos, como el Lago Llanquihue, el Lago
@@ -134,7 +136,7 @@ public class LakeCruise extends TourService {
         super.displayInformation();
         String boat = (boatType != null && !boatType.isBlank()) ? boatType : "datos no encontrados";
         System.out.println("Tipo de embarcación: " + boat);
-        System.out.println("Precio: $" + String.format("%.0f", price));
+        System.out.println("Precio: $" + FormatUtils.formatPrice(price));
         String guideName = (guide != null) ? guide.getFirstName() + " " + guide.getLastName() : "datos no encontrados";
         System.out.println("Guía: " + guideName);
     }
@@ -153,7 +155,7 @@ public class LakeCruise extends TourService {
     public void showSummary() {
         System.out.println("Paseo Lacustre: " + getName()
                 + " | Embarcación: " + boatType
-                + " | Precio: $" + String.format("%.0f", price));
+                + " | Precio: $" + FormatUtils.formatPrice(price));
     }
 
     @Override

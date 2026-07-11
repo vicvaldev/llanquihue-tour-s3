@@ -1,6 +1,7 @@
 package model;
 
 import util.ExceededCapacityException;
+import util.FormatUtils;
 
 /**
  * Representa una orden de compra de un servicio turístico generada por
@@ -105,8 +106,8 @@ public class PurchaseOrder {
         System.out.println("Cliente: " + customerName);
         System.out.println("Tour: " + tour.getName() + " (" + tour.getServiceType() + ")");
         System.out.println("Personas: " + peopleCount + " / Capacidad máxima: " + tour.getMaxCapacity());
-        System.out.println("Precio unitario: $" + String.format("%.2f", tour.getPrice()));
-        System.out.println("Total: $" + String.format("%.2f", total));
+        System.out.println("Precio unitario: $" + FormatUtils.formatPrice(tour.getPrice()));
+        System.out.println("Total: $" + FormatUtils.formatPrice(total));
     }
 
     /**

@@ -1,5 +1,7 @@
 package model;
 
+import util.FormatUtils;
+
 /**
  * Representa una ruta gastronómica que consiste en un recorrido con
  * paradas en diferentes lugares para degustar productos locales típicos
@@ -131,7 +133,7 @@ public class GastronomicRoute extends TourService {
     public void displayInformation() {
         super.displayInformation();
         System.out.println("Número de paradas: " + numberOfStops);
-        System.out.println("Precio: $" + String.format("%.0f", price));
+        System.out.println("Precio: $" + FormatUtils.formatPrice(price));
         String guideName = (guide != null) ? guide.getFirstName() + " " + guide.getLastName() : "datos no encontrados";
         System.out.println("Guía: " + guideName);
     }
@@ -150,7 +152,7 @@ public class GastronomicRoute extends TourService {
     public void showSummary() {
         System.out.println("Ruta Gastronómica: " + getName()
                 + " | Paradas: " + numberOfStops
-                + " | Precio: $" + String.format("%.0f", price));
+                + " | Precio: $" + FormatUtils.formatPrice(price));
     }
 
     @Override

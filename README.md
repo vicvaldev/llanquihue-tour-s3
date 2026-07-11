@@ -22,7 +22,9 @@ src/
 │   └── PurchaseOrder.java             — Orden de compra de un tour
 ├── ui/
 │   ├── Main.java                      — Punto de entrada (lanza la GUI)
-│   └── GestionGUI.java               — Interfaz gráfica con JFrame y JOptionPane
+│   ├── GestionGUI.java               — Interfaz gráfica principal: solo orquesta botones y delega a los managers
+│   ├── TourServiceManager.java        — Lógica de negocio de servicios turísticos (CRUD, filtros, diálogo de alta)
+│   └── OrderManager.java             — Lógica de negocio de órdenes de compra (CRUD, diálogo de alta)
 └── util/
     ├── ExceededCapacityException.java — Excepción para capacidad excedida en órdenes
     ├── InvalidRutException.java       — Excepción para RUT inválido
@@ -67,7 +69,9 @@ Cada subclase concreta implementa `showSummary()` con un mensaje personalizado s
 | `ExceededCapacityException` | util | Excepción controlada que se lanza al superar la capacidad máxima de un tour en una orden de compra. |
 | `InvalidRutException` | util | Excepción personalizada para RUT inválido. |
 | `RutValidator` | util | Implementa el algoritmo de validación de RUT chileno (módulo 11). |
-| `GestionGUI` | ui | Interfaz gráfica con `JFrame` que ofrece botones para mostrar resumen (vía `Registerable.showSummary()`), listar todos los registros, filtrar por precio, filtrar por lengua materna, agregar un nuevo servicio (con `JDialog` de formulario), agregar orden de compra, listar órdenes y salir. |
+| `GestionGUI` | ui | Interfaz gráfica principal con `JFrame`. Crea los botones de acción y los organiza en el layout. Delega cada operación a `TourServiceManager` u `OrderManager`. |
+| `TourServiceManager` | ui | Gestiona la lógica de servicios turísticos: carga desde CSV, `showSummary()`, `listAll()`, filtros por precio y lengua materna, y diálogo de alta (`AddServiceDialog` como inner class). |
+| `OrderManager` | ui | Gestiona la lógica de órdenes de compra: `listOrders()`, diálogo de alta (`AddOrderDialog` como inner class). |
 | `Main` | ui | Punto de entrada. Crea y muestra la ventana `GestionGUI`. |
 
 ## Interfaz gráfica (GUI)
