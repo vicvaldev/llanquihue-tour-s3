@@ -11,6 +11,7 @@ src/
 │   └── OrderDataManager.java          — Carga y guardado de órdenes de compra
 ├── model/
 │   ├── Registerable.java              — Interfaz con método showSummary()
+│   ├── IOrder.java                    — Interfaz para órdenes de compra
 │   ├── Address.java                   — Dirección física (composición)
 │   ├── Person.java                    — Persona genérica (clase base, implementa Registerable)
 │   ├── Employee.java                  — Empleado de la agencia (hereda de Person)
@@ -55,6 +56,7 @@ Cada subclase concreta implementa `showSummary()` con un mensaje personalizado s
 | Clase / Interfaz | Paquete | Descripción |
 |---|---|---|
 | `Registerable` | model | Interfaz que define el contrato `showSummary()` para todas las entidades gestionables del sistema. |
+| `IOrder` | model | Interfaz que define el contrato para órdenes de compra: `getOrderId()`, `getCustomerName()`, `getTour()`, `getPeopleCount()`, `getTotal()`, `showSummary()` y `toCsvLine()`. |
 | `Address` | model | Dirección con calle, número, ciudad y región. Composición en `Person`. |
 | `Person` | model | Clase base con RUT, nombre, apellido y dirección. Implementa `Registerable.showSummary()`. |
 | `Employee` | model | Hereda de `Person`. Incorpora cargo y sueldo base (validado > 0). Sobrescribe `showSummary()`. |
@@ -63,15 +65,15 @@ Cada subclase concreta implementa `showSummary()` con un mensaje personalizado s
 | `GastronomicRoute` | model | Hereda de `TourService`. Agrega `numberOfStops`, `price` y `guide` (composición). `showSummary()` muestra nombre, paradas y precio. |
 | `LakeCruise` | model | Hereda de `TourService`. Agrega `boatType`, `price` y `guide`. `showSummary()` muestra nombre, embarcación y precio. |
 | `CulturalExcursion` | model | Hereda de `TourService`. Agrega `historicalPlace`, `price` y `guide`. `showSummary()` muestra nombre, lugar histórico y precio. |
-| `PurchaseOrder` | model | Orden de compra con `customerName`, `tour`, `peopleCount` y `total` calculado. Valida capacidad máxima lanzando `ExceededCapacityException`. |
+| `PurchaseOrder` | model | Orden de compra con `customerName`, `tour`, `peopleCount` y `total` calculado. Implementa `IOrder`. Valida capacidad máxima lanzando `ExceededCapacityException`. |
 | `DataManager` | data | Utilidad estática que lee `resources/tours.csv` (20 campos), construye objetos de la jerarquía `TourService` según la columna `type`, filtra por precio o lengua materna del guía, y persiste nuevos servicios. Opera con `List<Registerable>` usando `instanceof TourService` para resolver el tipo concreto en los filtros. |
-| `OrderDataManager` | data | Utilidad estática que lee, agrega y guarda órdenes de compra en `resources/orders.csv` (8 campos). |
+| `OrderDataManager` | data | Utilidad estática que lee, agrega y guarda órdenes de compra en `resources/orders.csv` (8 campos). Trabaja con la interfaz `IOrder`. |
 | `ExceededCapacityException` | util | Excepción controlada que se lanza al superar la capacidad máxima de un tour en una orden de compra. |
 | `InvalidRutException` | util | Excepción personalizada para RUT inválido. |
 | `RutValidator` | util | Implementa el algoritmo de validación de RUT chileno (módulo 11). |
 | `GestionGUI` | ui | Interfaz gráfica principal con `JFrame`. Crea los botones de acción y los organiza en el layout. Delega cada operación a `TourServiceManager` u `OrderManager`. |
 | `TourServiceManager` | ui | Gestiona la lógica de servicios turísticos: carga desde CSV, `showSummary()`, `listAll()`, filtros por precio y lengua materna, y diálogo de alta (`AddServiceDialog` como inner class). |
-| `OrderManager` | ui | Gestiona la lógica de órdenes de compra: `listOrders()`, diálogo de alta (`AddOrderDialog` como inner class). |
+| `OrderManager` | ui | Gestiona la lógica de órdenes de compra: `listOrders()`, diálogo de alta (`AddOrderDialog` como inner class). Trabaja con `List<IOrder>`. |
 | `Main` | ui | Punto de entrada. Crea y muestra la ventana `GestionGUI`. |
 
 ## Interfaz gráfica (GUI)

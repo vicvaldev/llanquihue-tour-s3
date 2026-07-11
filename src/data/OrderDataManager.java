@@ -1,5 +1,6 @@
 package data;
 
+import model.IOrder;
 import model.PurchaseOrder;
 import model.Registerable;
 import model.TourService;
@@ -41,7 +42,7 @@ public class OrderDataManager {
      *                 resolver el tourId de cada orden
      * @return lista de objetos PurchaseOrder reconstruidos
      */
-    public static List<PurchaseOrder> loadOrders(String filePath, List<Registerable> services) {
+    public static List<IOrder> loadOrders(String filePath, List<Registerable> services) {
         Map<Integer, TourService> serviceMap = new HashMap<>();
         for (Registerable reg : services) {
             if (reg instanceof TourService ts) {
@@ -49,7 +50,7 @@ public class OrderDataManager {
             }
         }
 
-        List<PurchaseOrder> orders = new ArrayList<>();
+        List<IOrder> orders = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
             String line;
@@ -83,7 +84,7 @@ public class OrderDataManager {
      * @param filePath ruta al archivo de órdenes
      * @param order    orden de compra a persistir, no puede ser nula
      */
-    public static void appendOrder(String filePath, PurchaseOrder order) {
+    public static void appendOrder(String filePath, IOrder order) {
         try (BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(filePath, true), StandardCharsets.UTF_8))) {
             bw.write(order.toCsvLine());
@@ -101,10 +102,10 @@ public class OrderDataManager {
      * @param filePath ruta al archivo de órdenes
      * @param orders   lista de órdenes a persistir, no puede ser nula
      */
-    public static void saveOrders(String filePath, List<PurchaseOrder> orders) {
+    public static void saveOrders(String filePath, List<IOrder> orders) {
         try (BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
-            for (PurchaseOrder order : orders) {
+            for (IOrder order : orders) {
                 bw.write(order.toCsvLine());
                 bw.newLine();
             }

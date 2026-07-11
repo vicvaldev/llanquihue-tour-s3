@@ -58,7 +58,7 @@ public class GestionGUI extends JFrame {
         btnFilterTongue.addActionListener(e -> tourServiceManager.filterByMotherTongue());
         btnAdd.addActionListener(e -> tourServiceManager.showAddDialog());
         btnAddOrder.addActionListener(e -> orderManager.showAddOrderDialog(tourServiceManager.loadServices()));
-        btnListOrders.addActionListener(e -> orderManager.listOrders());
+        btnListOrders.addActionListener(e -> orderManager.listOrders(tourServiceManager.loadServices()));
         btnExit.addActionListener(e -> System.exit(0));
     }
 }

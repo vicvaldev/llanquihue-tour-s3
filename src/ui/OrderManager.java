@@ -22,15 +22,15 @@ public class OrderManager {
         this.outputArea = outputArea;
     }
 
-    public void listOrders() {
-        List<String> orderLines = OrderDataManager.loadOrderLines(ORDERS_FILE);
-        if (orderLines.isEmpty()) {
+    public void listOrders(List<Registerable> services) {
+        List<IOrder> orders = OrderDataManager.loadOrders(ORDERS_FILE, services);
+        if (orders.isEmpty()) {
             outputArea.setText("No hay órdenes de compra registradas.\n");
             return;
         }
         StringBuilder sb = new StringBuilder("=== Órdenes de Compra ===\n");
-        for (String line : orderLines) {
-            sb.append(line).append("\n");
+        for (IOrder order : orders) {
+            sb.append(order).append("\n");
         }
         outputArea.setText(sb.toString());
     }

@@ -15,7 +15,7 @@ import util.FormatUtils;
  * @see TourService
  * @see ExceededCapacityException
  */
-public class PurchaseOrder {
+public class PurchaseOrder implements IOrder {
     private String customerName;
     private TourService tour;
     private int peopleCount;
@@ -67,6 +67,7 @@ public class PurchaseOrder {
      *
      * @return nombre del cliente
      */
+    @Override
     public String getCustomerName() { return customerName; }
 
     /**
@@ -74,6 +75,7 @@ public class PurchaseOrder {
      *
      * @return servicio turístico contratado
      */
+    @Override
     public TourService getTour() { return tour; }
 
     /**
@@ -81,6 +83,7 @@ public class PurchaseOrder {
      *
      * @return cantidad de personas
      */
+    @Override
     public int getPeopleCount() { return peopleCount; }
 
     /**
@@ -89,6 +92,7 @@ public class PurchaseOrder {
      *
      * @return total de la orden
      */
+    @Override
     public double getTotal() { return total; }
 
     /**
@@ -96,6 +100,7 @@ public class PurchaseOrder {
      *
      * @return número de orden
      */
+    @Override
     public int getOrderId() { return orderId; }
 
     /**
@@ -127,6 +132,7 @@ public class PurchaseOrder {
      * incluyendo el número de orden, nombre del cliente, datos del
      * tour, capacidad, precio unitario y total.
      */
+    @Override
     public void showSummary() {
         System.out.println("=== Orden de Compra #" + orderId + " ===");
         System.out.println("Cliente: " + customerName);
